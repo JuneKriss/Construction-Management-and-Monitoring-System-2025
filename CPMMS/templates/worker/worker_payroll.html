@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/worker/worker_payroll.css' %}"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <title>Payroll</title>
+  </head>
+  <body>
+    {% include 'worker/worker_header.html' %}
+
+    <section class="container">
+      <div class="page_title">
+        <h3>Net Pay</h3>
+        <p>Review your earnings, including deductions and bonuses.</p>
+      </div>
+      <div class="payroll_info">
+          <div class="employee_details">
+            <p>
+              <strong>Worker:</strong>
+              {% if worker %}
+                {% if worker.first_name != 'Not Provided' %}
+                  {{ worker.first_name }}
+                {% endif %}
+                {% if worker.last_name != 'Not Provided' %}
+                  {{ worker.last_name }}
+                {% endif %}
+                {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                  Names Not Provided
+                {% endif %} 
+              {% else %} 
+                No worker found
+              {% endif %}
+            </p>
+            <p><strong>Pay Period:</strong> 
+              {% if current_week %}
+                {{ current_week.0|date:"F j" }} - {{ current_week.1|date:"j, Y" }}
+              {% else %}
+                You are not assigned to any project yet
+              {% endif %}
+            </p>
+            <p><strong>Pay Cycle:</strong> Weekly</p>
+          </div>
+          <table class="payroll_table">
+            <thead>
+              <tr>
+                <th>Bonus</th>
+                <th>Amount</th>
+                <th>Deductions</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for bonus, deduction in combined_data %}
+              <tr>
+                <td>{{ bonus.bonus_name|default:"-" }}</td>
+                <td>₱ {{ bonus.bonus_amount|default:"0" }}</td>
+                <td>{{ deduction.deduction_name|default:"-" }}</td>
+                <td>₱ {{ deduction.deduction_amount|default:"0" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4">No payroll data available.</td>
+              </tr>
+              {% endfor %}
+
+              <tr class="separator">
+                <td colspan="4">Totals</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><strong>Total Earnings</strong></td>
+                <td><strong>₱ {{ total_bonus }}</strong></td>
+                <td><strong>Total Deductions</strong></td>
+                <td><strong>₱ {{ total_deduction }}</strong></td>
+              </tr>
+              <tr class="total_amount">
+                <td colspan="3"><strong>Net Salary</strong></td>
+                <td><strong>₱ {{ net_salary }}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div class="printBtn_container">
+            <button class="print_btn">
+              <span class="material-symbols-outlined">download</span>
+              <p>Download</p>
+            </button>
+          </div>
+
+          <!-- Hidden Bonus Table -->
+          <table id="bonus_table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Bonus Name</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for bonus in bonuses %}
+              <tr>
+                <td>{{ bonus.bonus_name|default:"-" }}</td>
+                <td>Php {{ bonus.bonus_amount|default:"0" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="2">No bonus data available.</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td><strong>Total Bonuses</strong></td>
+                <td><strong>Php {{ total_bonus }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <!-- Hidden Deduction Table -->
+          <table id="deduction_table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Deduction Name</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for deduction in deductions %}
+              <tr>
+                <td>{{ deduction.deduction_name|default:"-" }}</td>
+                <td>Php {{ deduction.deduction_amount|default:"0" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="2">No deduction data available.</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td><strong>Total Deductions</strong></td>
+                <td><strong>Php {{ total_deduction }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+    </section>
+
+   <script>
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+
+      let workerFirstName = "{{ worker.first_name|default:'Not Provided' }}".trim();
+      let workerLastName = "{{ worker.last_name|default:'Not Provided' }}".trim();
+      let workerName = "Worker";
+
+      if (workerFirstName !== "Not Provided" && workerLastName !== "Not Provided") {
+        workerName = `${workerFirstName}_${workerLastName}`;
+      } else if (workerFirstName !== "Not Provided") {
+        workerName = workerFirstName;
+      } else if (workerLastName !== "Not Provided") {
+        workerName = workerLastName;
+      }
+
+      const today = new Date().toLocaleDateString(); 
+
+      doc.setFont("helvetica");
+
+      doc.setFontSize(24);
+      doc.setFont(undefined, "bold");
+      doc.setTextColor(255, 204, 0);
+      doc.text("Kanooz", 14, 15);
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "italic");
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Payroll Generated At: ${today}`, pageWidth - 14, 15, { align: "right" }); 
+
+      doc.setFontSize(16);
+      doc.setFont(undefined, "bold"); 
+      doc.text("Payroll Report", pageWidth / 2, 35, { align: "center" });
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text(`Worker: ${workerName}`, 14, 50);
+      doc.text("Position: Worker", 14, 60);
+
+      
+      doc.setFontSize(12);
+      doc.text("Bonuses", 14, 80);
+
+      doc.autoTable({
+        html: "#bonus_table",
+        startY: 85,
+        theme: "grid",
+        headStyles: { fillColor: [67, 121, 242] },
+        styles: { fontSize: 12, cellPadding: 3, halign: "center" },
+        columnStyles: { 1: { halign: "center" } }, 
+      });
+
+      let finalY = doc.lastAutoTable.finalY + 10;
+      let totalBonuses = "{{ total_bonus|default:'0' }}";
+      doc.setFontSize(12);
+      doc.text(`Total Bonuses: Php ${totalBonuses}`, 14, finalY);
+
+      doc.addPage();
+
+      doc.setFontSize(24);
+      doc.setFont(undefined, "bold"); 
+      doc.setTextColor(255, 204, 0);
+      doc.text("Kanooz", 14, 15); 
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "italic");
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Payroll Generated At: ${today}`, pageWidth - 14, 15, { align: "right" }); 
+
+      doc.setFontSize(16);
+      doc.setFont(undefined, "bold"); 
+      doc.text("Payroll Report", pageWidth / 2, 35, { align: "center" });
+
+      
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text(`Worker: ${workerName}`, 14, 50);
+      doc.text("Position: Worker", 14, 60);
+
+   
+      doc.setFontSize(12);
+      doc.text("Deductions", 14, 80);
+
+      doc.autoTable({
+        html: "#deduction_table",
+        startY: 85,
+        theme: "grid",
+        headStyles: { fillColor: [242, 67, 67] },
+        styles: { fontSize: 12, cellPadding: 3, halign: "center" },
+        columnStyles: { 1: { halign: "center" } },
+      });
+   
+      finalY = doc.lastAutoTable.finalY + 10;
+      let totalDeductions = "{{ total_deduction|default:'0' }}";
+      doc.setFontSize(12);
+      doc.text(`Total Deductions: Php ${totalDeductions}`, 14, finalY);
+
+      doc.save(`${workerName}_Payroll_Report.pdf`);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelector(".print_btn").addEventListener("click", downloadPDF);
+    });
+  </script>
+
+
+  </body>
+</html>

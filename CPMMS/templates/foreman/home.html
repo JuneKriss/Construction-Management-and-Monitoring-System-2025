@@ -1,0 +1,268 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/foreman/foreman_home.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title>Home</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'foreman/sidebar.html' %}
+            <div class="main container">
+                <header>
+                    <div class="head">
+                        <div class="head_nav">
+                            <p>Home</p>
+                            <img src="{% static 'icons/next.png' %}" class="nav_icon">
+                            <a href="{% url 'foreman_home' %}">Assigned Project</a>
+                        </div>
+                        <h1>Assigned Project</h1>
+                    </div>
+                    <nav class="nav_links">
+                        <a href="{% url 'foreman_home' %}">Project Details</a>
+                    </nav>  
+                </header>
+                <div class="project_container">
+                    {% if assigned_projects %}
+                        {% for project in assigned_projects %}
+                        <div class="info_box">
+                            <div class="info_title">
+                                <h4>Project Progress</h4>
+                            </div>
+                            <div class="progress_bar">
+                                <div class="progress">
+                                    <div class="progress-fill" style="width: {{ project.project_percent }}%;">
+                                        <span class="progress-percentage">{{ project.project_percent }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_box">
+                            <div class="info_title">
+                                <h4>Project Information</h4>
+                            </div>
+                            <div class="info">
+                                <div class="info_group two-column">
+                                    <label for="project_name">Project Name</label>
+                                    <input type="text" id="project_name" name="project_name" value="{{ project.project_name }}" required readonly>
+                                </div>
+                                <div class="info_group">
+                                    <label for="client">Client</label>
+                                    <input type="text" id="client" name="client" value="{{ project.client }}" required readonly>
+                                </div>
+                                <div class="info_group">
+                                    <label for="budget">Budget</label>
+                                    <input type="number" min="1" id="budget" name="budget" value="{{ project.budget }}" placeholder="₱" required readonly>
+                                </div>
+                                <div class="last_row two-column">
+                                    <div class="info_group">
+                                        <label for="description">Description</label>
+                                        <textarea id="description" name="description" rows="6" cols="50" placeholder="(Optional)" readonly>{{ project.description }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_box">
+                            <div class="info_title">
+                                <h4>Project Dates</h4>
+                            </div>
+                            <div class="info">
+                                <div class="info_group">
+                                    <label for="start">Start Date</label>
+                                    <input type="date" id="start"  value="{{ project.start_date|date:"Y-m-d" }}" name="start" readonly>
+                                </div>
+                                <div class="info_group">
+                                    <label for="due">Due Date</label>
+                                    <input type="date" id="due"  value="{{ project.due_date|date:"Y-m-d" }}" name="due" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_box">
+                            <div class="info_title">
+                                <h4>Project Timeframe</h4>
+                            </div>
+                            <div class="info">
+                                <div class="info_group">
+                                    <div class="contract_btns">
+                                        <div class="contract_left">
+                                            {% if not project.timeframe %}
+                                                <label for="">No Available Timeframe yet</label>
+                                            {% else %}
+                                                <label for="">Time Frame</label>
+                                                <button type="button" class="contract_btn" id="viewTimeframeBtn" data-contract-url="{{ project.timeframe.url }}">View</button>
+                                            {% endif %}
+                                        </div>
+                                        <div id="imageModal" class="modal">
+                                            <div class="modal-content">
+                                                <img id="modalImage" src="" alt="Project Contract">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {% if not project.timeframe %}
+                                            {% else %}
+                                                <div>
+                                                    <label for="">Download</label>
+                                                    <a id="downloadLink" href="{{ project.timeframe.url }}" download="timeframe.png" class="downloadbtn">
+                                                        <img src="{% static 'icons/download.png' %}" class="download">
+                                                        <p>Download</p>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_box">
+                            <div class="info_title">
+                                <h4>Project Personnels</h4>
+                            </div>
+                            <div class="info">
+                                <div class="info_group two-column">
+                                    <table id="personnels">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if project.project_manager_id %}
+                                            <tr>
+                                                <td>
+                                                    {% if project.project_manager_id.first_name != 'Not Provided' %}
+                                                        {{ project.project_manager_id.first_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if project.project_manager_id.last_name != 'Not Provided' %}
+                                                        {{ project.project_manager_id.last_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if project.project_manager_id.first_name == 'Not Provided' and project.project_manager_id.last_name == 'Not Provided' %}
+                                                        Names Not Provided ({{ project.project_manager_id.account_id.username }})
+                                                    {% endif %}
+                                                </td>
+                                                <td>Project Manager</td>
+                                            </tr>
+                                            {% else %}
+                                            <tr><td colspan="2">No Project Manager Assigned Yet.</td></tr>     
+                                            {% endif %}
+                                            {% if project.assigned_foreman %}
+                                            <tr>
+                                                <td>
+                                                    {% if project.assigned_foreman.first_name != 'Not Provided' %}
+                                                        {{ project.assigned_foreman.first_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if project.assigned_foreman.last_name != 'Not Provided' %}
+                                                        {{ project.assigned_foreman.last_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if project.assigned_foreman.first_name == 'Not Provided' and project.assigned_foreman.last_name == 'Not Provided' %}
+                                                        Names Not Provided ({{ project.assigned_foreman.account_id.username }})
+                                                    {% endif %} 
+                                                </td>
+                                                <td>Foreman</td>
+                                            </tr>                                                
+                                            {% else %}
+                                            <tr><td colspan="2">No Project Manager Assigned Yet.</td></tr>
+                                            {% endif %}
+                                            {% if workers %}
+                                                {% for worker in workers %}
+                                                <tr>
+                                                    <td>
+                                                        {% if worker.first_name != 'Not Provided' %}
+                                                            {{ worker.first_name }}
+                                                        {% endif %}
+                                                                        
+                                                        {% if worker.last_name != 'Not Provided' %}
+                                                            {{ worker.last_name }}
+                                                        {% endif %}
+                                                                        
+                                                        {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                                            Names Not Provided ({{ worker.account_id.username }})
+                                                        {% endif %} 
+                                                    </td>
+                                                    <td>Worker</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                            <tr><td colspan="2">No Worker Assigned Yet.</td></tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_box">
+                            <div class="info_title">
+                                <h4>Project Resources</h4>
+                            </div>
+                            <div class="info">
+                                <div class="info_group two-column">
+                                    <table id="resources">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Quantity</th>
+                                                <th>Type</th>
+                                                <th>SubType</th>
+                                                <th>Cost</th>
+                                                <th>Cost Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if resources %}
+                                                {% for resource in resources %}
+                                                <tr>
+                                                    <td>{{ resource.name }}</td>
+                                                    <td>{{ resource.quantity }}</td>
+                                                    <td>{{ resource.get_type_display }}</td>
+                                                    <td>{{ resource.subtype.name }}</td>
+                                                    <td>₱ {{ resource.cost }}</td>
+                                                    <td>{{ resource.cost_type }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="6" style="text-align: center;">No resources available for this project.</td>
+                                                </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                    <p class="empty">No project assigned for you yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'javascript/function.js' %}"></script>
+        <script>
+            const viewTimeframeBtn = document.getElementById("viewTimeframeBtn");
+            const modal = document.getElementById("imageModal");
+            const modalImage = document.getElementById("modalImage");
+            const closeBtn = document.getElementsByClassName("close-btn")[0];
+
+            if (viewTimeframeBtn) {
+                viewTimeframeBtn.addEventListener("click", () => {
+                    const imageUrl = viewTimeframeBtn.getAttribute("data-contract-url");
+                    modalImage.src = imageUrl;
+                    modal.style.display = "flex";
+                });
+            }
+
+            window.addEventListener("click", (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        </script>
+    </body>
+</html>

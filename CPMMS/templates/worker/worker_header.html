@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap"
+    />
+    <link rel="stylesheet" href="{% static 'css/worker/worker_header.css' %}" />
+    <title>Attendance</title>
+  </head>
+  <body>
+    <div class="header_back">
+      <header class="container">
+        <div class="header">
+          <div class="left_header">
+            <h1>Kanooz</h1>
+          </div>
+          <div class="right_header">
+            <span class="material-symbols-outlined icon" id="menu">menu</span>
+          </div>
+          <nav class="nav" id="sidebar">
+            <ul>
+              <li class="nav_logo">
+                <h1>Kanooz</h1>
+              </li>
+              <div class="nav_group">
+                <li>
+                  <a href="{% url 'worker_home' %}">
+                    <span class="material-symbols-outlined nav_icon">home</span>
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'worker_profile' %}">
+                    <span class="material-symbols-outlined nav_icon"
+                      >person</span
+                    >
+                    Profle
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'worker_attendance' %}">
+                    <span class="material-symbols-outlined nav_icon"
+                      >checklist</span
+                    >
+                    Attendance
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'worker_schedule' %}">
+                    <span class="material-symbols-outlined nav_icon"
+                      >calendar_today</span
+                    >
+                    Schedule
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'worker_payroll' %}">
+                    <span class="material-symbols-outlined nav_icon"
+                      >payments</span
+                    >
+                    Payroll
+                  </a>
+                </li>
+              </div>
+              <li class="logout">
+                <a href="{% url 'logout_user' %}">
+                  <span class="material-symbols-outlined nav_icon">logout</span>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+    </div>
+
+    <script>
+      const menuIcon = document.getElementById("menu");
+      const sidebar = document.getElementById("sidebar");
+
+      menuIcon.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!sidebar.contains(e.target) && !menuIcon.contains(e.target)) {
+          sidebar.classList.remove("active");
+        }
+      });
+    </script>
+  </body>
+</html>

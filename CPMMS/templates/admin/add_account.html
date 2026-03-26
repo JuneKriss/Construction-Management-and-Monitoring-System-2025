@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/admin/admin_addAccount.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title>Add Account</title>
+    </head>
+    <body>
+        {% include 'admin/admin_header.html' %}
+        <section class="container form_con">
+            <div class="form_text">
+                <h1>Create an Account</h1>
+                <p>Create an account for new members to manage their access and permissions.</p>
+            </div>
+            <form method="POST" action="{% url 'add_account' %}">
+                {% csrf_token %}
+                <div class="input_box">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="input_box">
+                    <label for="password">Password</label>
+                    <input type="text" name="password" required>
+                </div>
+                <div class="select_box">
+                    <label for="role">Role</label>
+                    <select name="role" required>
+                        <option value="" selected disabled hidden>----</option>
+                        <option value="PM">Project Manager</option>
+                        <option value="FM">Foreman</option>
+                        <option value="worker">Worker</option>
+                    </select>
+                </div>
+                <div class="submit">
+                    <input type="submit" value="Submit" class="subtn" name="submit" id="submit">
+                    <input type="submit" value="Submit and Add Another" class="subtn" name="submit_another" id="another">
+                </div>
+                {% if messages %}
+                    <div class="alert">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </form>
+        </section>  
+
+        <script src="{% static 'javascript/admin_addAccount.js' %}"></script>
+    </body>
+</html>

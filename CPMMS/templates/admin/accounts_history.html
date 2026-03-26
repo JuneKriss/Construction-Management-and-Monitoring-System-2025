@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/admin/account_history.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title>Accounts</title>
+    </head>
+    <body>
+        {% include 'admin/admin_header.html' %}
+        <section class="container">
+            <div class="history_head">
+                <h2>Account History</h2>
+                <p>Review and manage deactivated accounts here.</p>
+            </div>
+            <div>
+                <table id="deactivated_accounts">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Date Deactivated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if accounts %}
+                            {% for account in accounts %}
+                            <tr>
+                                <td>{{ account.username }}</td>
+                                <td><p class="password">{{ account.password }}</p></td>
+                                <td>{{ account.get_role_display }}</td>
+                                <td class="status">{{ account.status }}</td>
+                                <td>{{ account.date_deactivated }}</td>
+                                <td>
+                                    <a href="accountDetails_page/{{ account.account_id }}" class="details btn">View Details</a>
+                                    <a href="{% url 'activate_account' account.account_id %}" class="btn activate">Activate</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6">Deactivated accounts will be displayed here.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.activate').forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        const url = this.getAttribute('href');
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "This will activate the account.",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, activate it!',
+                        }).then(result => {
+                            if (result.isConfirmed) {
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

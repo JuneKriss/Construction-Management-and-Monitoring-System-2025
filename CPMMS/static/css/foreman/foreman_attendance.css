@@ -1,0 +1,340 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: Poppins, Sans-serif;
+    line-height: 1.5rem;
+}
+body{
+    background-color: #fff;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+.content-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+.container {
+    background-color: #fff;
+}
+.head{
+    line-height: 2.5rem;
+    border-bottom: 2px solid #f9f9f9;
+    padding: 20px;
+    padding-left: 3rem;
+}
+.head h1{
+    font-weight: 500;
+}
+.head .head_nav{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 17px;
+}
+.head_nav a{
+    text-decoration: none;
+    color: #4379F2;
+    cursor: pointer;
+}
+.head_nav a:hover{
+    text-decoration: underline;
+}
+.head_nav p{
+    color: #777777;
+}
+.nav_icon{
+    width: 1.5em;
+}
+.nav_links{
+    padding: 18px 50px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    display: flex;
+    gap: 4rem;
+}
+.nav_links a{
+    color: #777777;
+    text-decoration: none;
+}
+.nav_links a.active{
+    color: #4379F2;
+    border-bottom: 1px solid #4379F2;
+}
+.nav_links a:hover{
+    color: #4379F2;
+    border-bottom: 1px solid #4379F2;
+}
+.action_icon{
+    width: 1.5em;
+}
+.table_actions{
+    padding: 20px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.left .search{
+    margin-left: 13%;
+    position: relative;
+    width: 100%;
+}
+.left .search input{
+    width: 100%;
+    padding: 15px 25px;
+    border: 1px solid #c0c0c0;
+    padding-right: 40px;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.search .action_icon{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10%;
+    cursor: pointer;
+}
+.search input:focus {
+    border-color: #4379F2;
+    outline: #4379F2;
+} 
+.table_actions .right{
+    width: 19%;
+    display: flex;
+    align-items: center;
+}
+.right .filter_box{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 79%;
+}
+.filter_box label{
+    font-size: 15px;
+    color: #777777;
+}
+.filter_box select{
+    padding: 15px 30px;
+    cursor: pointer;
+    border: 1px solid #c0c0c0;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    font-size: 14px;
+}
+.filter_box select:focus{
+    border-color: #4379F2;
+    outline: #4379F2;
+}
+#workers {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1.5%;
+    max-width: 1536px;
+    margin-left: 3%;
+    margin-top: .5%;
+    border-radius: 15px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+#workers-head {
+    background-color: #f9f9f9;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+#workers th {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    padding: 20px;
+    width: 10%;
+}
+#workers th:first-child, #workers td:first-child{
+    width: 4%;
+}
+#workers td{
+    padding: 25px;
+}
+#workers td:not(.worker_profile){
+    text-align: center;
+}
+#workers .worker_profile {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    justify-content: center;
+}
+.view_btn{
+    background-color: #4379F2;
+    padding: 10px 30px;
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid #4379F2;
+    border-radius: 50px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    transition: 0.1s ease-in-out;
+    font-size: 15px;
+}
+.view_btn:hover{
+    background-color: transparent;
+    color: #4379F2;
+    border: 1px solid #4379F2;
+    cursor: pointer;
+}
+.profile {
+    width: 55px; 
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.profile-details{
+    margin-left: 10px;
+}
+.profile-details h4{
+    font-weight: 600;
+}
+.profile-details span{
+    color: #777777;
+}
+.table_row{
+    border-bottom: 4px solid #f9f9f9;
+}
+.late{
+    color: red;
+}
+.present{
+    color: green;
+}
+.empty{
+    font-size: 18px;
+}
+.modal{
+    display: none;
+    position: fixed; 
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border: 1px solid #888;
+    border-radius: 25px;
+    width: 40%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.taskModal_head{
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 3%;
+}
+.taskModal_head::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f9f9f9;
+}
+.left_head{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.left_head .taskHead_img{
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}   
+.left_head .addimg{
+    width: 100%;
+    height: auto;
+}
+.head_text{
+    line-height: 1.5;
+}
+.head_text h2{
+    font-weight: 500;
+}
+.head_text p{
+    color: #777777;
+}
+.close {
+    color: #777;
+    float: right;
+    font-size: 40px;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+#attendances{
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 1.5%;
+    margin: 0 auto;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+#attendances thead, #attendances tbody tr{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+#attendances thead{
+    box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.15);
+    z-index: 1; 
+    position: relative;
+}
+#attendances th{
+    text-align: center; 
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    padding: 15px;
+    width: 15%;
+    background-color: #fff; 
+}
+#attendances tr:nth-child(odd){
+    background-color: #f9f9f9;
+}
+#attendances tbody{
+    display: block;
+    max-height: 500px;
+    overflow-y: auto;
+}
+#attendances td{
+    padding: 20px;
+    text-align: center;
+    width: 15%;
+    font-size: 15px;
+    position: relative;
+}
+.attendance_container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 10px;
+}
+.attendance_container h4{
+    margin-top: -1%;
+    font-weight: 500;
+}

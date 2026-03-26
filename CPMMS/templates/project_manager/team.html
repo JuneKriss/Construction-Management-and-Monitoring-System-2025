@@ -1,0 +1,298 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/project_manager/pm_team.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <title>Project Team</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'project_manager/sidebar.html' %}
+            <section class="main container">
+                <div class="container_box">
+                    <div class="head">
+                        <div class="head_title">
+                            <h1>Team Members</h1>
+                            <p>Manage and review your team members' details.</p>
+                        </div>
+                    </div>
+                    <section class="team_table">
+                        <!--
+                        <div class="action">
+                            <div class="search">
+                                <input type="text" placeholder="Search Project" id="search">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                        </div>
+                        -->
+                        <div class="box_container">
+                            {% if project_data %}
+                            {% for project in project_data %}
+                            <div class="team_box" data-project-id="{{ project.project_id }}">
+                                <div class="project_info">
+                                    <h4>{{ project.project_name }} - {{ project.client }}</h4>
+                                    <p>{{ project.description }}</p>
+                                </div>
+                                <div>
+                                    <table id="team">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if project.foreman %}
+                                            <tr>
+                                                <td>
+                                                    <img src="{{ project.foreman.foreman_image }}" alt="Foreman Image" class="avatar">
+                                                    <div class="text">
+                                                        <h4>
+                                                            {% if project.foreman.first_name != 'Not Provided' %}
+                                                                {{ project.foreman.first_name }}
+                                                            {% endif %}
+                                                                            
+                                                            {% if project.foreman.last_name != 'Not Provided' %}
+                                                                {{ project.foreman.last_name }}
+                                                            {% endif %}
+                                                                            
+                                                            {% if project.foreman.first_name == 'Not Provided' and project.foreman.last_name == 'Not Provided' %}
+                                                                Names Not Provided ({{ project.foreman.account }})
+                                                            {% endif %}
+                                                        </h4>
+                                                        <p>
+                                                            {% if project.foreman.email != 'default@example.com'%}
+                                                                {{ project.foreman.email }}
+                                                            {% else %}
+                                                                Email Not Provided
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td><p>{{ project.foreman.role }}</p></td>
+                                            </tr>
+                                            {% endif %}
+                                            {% for worker in project.workers %}
+                                            <tr data-worker-id="{{ worker.worker_id }}">
+                                                <td>
+                                                    <img src="{{ worker.worker_image.url }}" alt="" class="avatar">
+                                                    <div class="text">
+                                                        <h4>
+                                                            {% if worker.first_name != 'Not Provided' %}
+                                                                {{ worker.first_name }}
+                                                            {% endif %}
+                                                                            
+                                                            {% if worker.last_name != 'Not Provided' %}
+                                                                {{ worker.last_name }}
+                                                            {% endif %}
+                                                                            
+                                                            {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                                                Names Not Provided ({{ worker.account }})
+                                                            {% endif %}
+                                                        </h4>
+                                                        <p>
+                                                            {% if worker.contact != '000-000-0000' %}
+                                                                {{ worker.contact }}
+                                                            {% else %}
+                                                                Contact Number Not Provided
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td><p>{{ worker.role }}</p></td>
+                                                <td class="icons">
+                                                    <span class="material-symbols-outlined" id="openModalText">info</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% if not project.foreman and not project.workers %}
+                                            <tr>
+                                                <td class="empty" style="width: 100%;">
+                                                    No foreman and worker assigned on the project yet.
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div>
+                                <p style="text-align: center; width: 100%; font-style: italic; color: #777;">You are currently not assigned to any project</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <div id="modal" class="modal">
+                <div class="modal-content">
+                    <div class="return" id="closeModal">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span class="close">Back to team view</span>
+                    </div>
+                    <div class="modal-header">
+                        <div class="profile">
+                            <img src="{% static 'images/profile.webp' %}" alt="" class="profile_pic">
+                            <div class="profile_infos">
+                                <div class="name">
+                                    <span>Worker</span>
+                                    <h4>John Doe</h4>
+                                </div>
+                                <div class="other_info">
+                                    <div class="info_box">
+                                        <span>Address</span>
+                                        <p>Maria Cristina Lanao</p>
+                                    </div>
+                                    <div class="info_box">
+                                        <span>Contact</span>
+                                        <p>0956288815</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="body_title">Project Name - Client Name</h3>
+                        <div class="table_container">
+                            <h4>Recent Attendances</h4>
+                            <table id="worker_attendance">
+                                <thead id="worker_attendance-head">
+                                    <tr>
+                                        <th>Time In</th>
+                                        <th>Status</th>
+                                        <th>Time Out</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="table_container">
+                            <h4>Recent Tasks</h4>
+                            <table id="worker_progress">
+                                <thead id="worker_progress-head">
+                                    <tr>
+                                        <th>Task Name</th>
+                                        <th>Status</th>
+                                        <th>Start Date</th>
+                                        <th>Deadline</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Roofing</td>
+                                        <td>
+                                            <div class="status-container">
+                                                <span class="status-circle status-nearly-completed"></span>
+                                                <p class="nearly-completed-text">Nearly Completed</p>
+                                            </div>
+                                        </td>
+                                        <td>Nov. 16,2024</td>
+                                        <td>Dec. 01,2024</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sapmpl</td>
+                                        <td>
+                                            <div class="status-container">
+                                                <span class="status-circle status-in-progress"></span>
+                                                <p class="in-progress-text">In Progress</p>
+                                            </div>
+                                        </td>
+                                        <td>Nov. 16,2024</td>
+                                        <td>Dec. 01,2024</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="footer_left">
+                            <h3>Estimated Salary:</h3>
+                            <h2 class="estimated-salary"></h2>
+                        </div>
+                        <div class="footer_right">
+                            <a href="#" class="view-payroll-link bonus" id="open-bonus-modal">Add Bonus</a>
+                            <a href="#" class="view-payroll-link deduction" id="open-deduction-modal">Add Deduction</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bonus Modal -->
+        <div class="payrollModal" id="bonus-modal">
+            <div class="payrollModalBody">
+                <div class="updateModal_head">
+                    <span class="close closeModal">&times;</span>
+                    <div class="left_updateModal_head">
+                        <div class="updateModal_icon">
+                            <span class="material-symbols-outlined">library_add</span>
+                        </div>
+                        <div class="updateModal_head_text">
+                            <h2>Add Bonus Form</h2>
+                            <p>Add bonus for this payroll.</p>
+                        </div>
+                    </div>
+                </div>
+                <form id="bonusPayrollForm" method="post">
+                    {% csrf_token %}
+                    <div class="updatePayroll_form_group two-column">
+                        <label for="payroll-total-amount-bonus">Bonus Name</label>
+                        <input type="text" id="payroll-total-amount-bonus" name="payrollTotalAmountBonus">
+                    </div>
+                    <div class="updatePayroll_form_group two-column">
+                        <label for="payroll-bonus">Bonus Amount</label>
+                        <input type="number" id="payroll-bonus" name="payrollBonus" min="0">
+                    </div>
+                    <div class="action_btns two-column">
+                        <button type="submit" class="submit">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Deduction Modal -->
+        <div class="payrollModal" id="deduction-modal">
+            <div class="payrollModalBody">
+                <div class="updateModal_head">
+                    <span class="close closeModal">&times;</span>
+                    <div class="left_updateModal_head">
+                        <div class="updateModal_icon">
+                            <span class="material-symbols-outlined">library_add</span>
+                        </div>
+                        <div class="updateModal_head_text">
+                            <h2>Add Deduction Form</h2>
+                            <p>Add deduction for this payroll.</p>
+                        </div>
+                    </div>
+                </div>
+                <form id="deductionPayrollForm" method="post">
+                    {% csrf_token %}
+                    <div class="updatePayroll_form_group two-column">
+                        <label for="payroll-total-amount-deduction">Deduction Name</label>
+                        <input type="text" id="payroll-total-amount-deduction" name="payrollTotalAmountDeduction">
+                    </div>
+                    <div class="updatePayroll_form_group two-column">
+                        <label for="payroll-deductions">Deduction Amount</label>
+                        <input type="number" id="payroll-deduction" name="payrollDeductions" min="0">
+                    </div>
+                    <div class="action_btns two-column">
+                        <button type="submit" class="submit">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'javascript/pm_team.js' %}"></script>
+    </body>
+</html>

@@ -1,0 +1,233 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+    font-family: Poppins, Sans-serif;
+}
+.container{
+    max-width: 1536px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}   
+.accounts_table{
+    margin-top: 1.5%;
+}
+.actions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2%;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+.actions .left{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    gap: 1rem;
+}
+.left .filter{
+    display: flex;
+    width: 100%;
+    gap: 3rem;
+}
+.filter .filter_box{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 3px;
+}
+.filter_box select{
+    padding: 8px;
+    cursor: pointer;
+    border: 1px solid #c0c0c0;
+}
+.left .filterbtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.1s ease-in-out;
+    color: #fff;
+}
+.filterbtn .addimg{
+    width: 5%;
+}
+.actions .right{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1rem;
+}
+.right .right_buttons{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 1rem;
+}
+.right_buttons .history{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #fff;
+    border: 1px solid #4379F2;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 11px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.1s ease-in-out;
+}
+.right_buttons .history:hover{
+    background-color: #f9f9f9;
+}
+.history span{
+    font-size: 25px;
+    color: #4379F2;
+}
+.history a{
+    text-decoration: none;
+    color: #4379F2;
+}
+.right .addbtn{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 45%;
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.1s ease-in-out;
+}
+.right .addbtn:hover,
+.left .filterbtn:hover{
+    background-color: #0f4eda;
+}
+.addbtn .addimg{
+    width: 17%;
+}
+.addbtn a{
+    text-decoration: none;
+    color: #fff;
+}
+.right .search{
+    position: relative;
+    width: 39%;
+}
+.right .search input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #c0c0c0;
+    padding-right: 40px;
+}
+.search input:focus {
+    border-color: #4379F2;
+    outline: #4379F2;
+}  
+.search .addimg{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8%;
+    cursor: pointer;
+}
+#accounts{
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 1.5%;
+}
+#accounts th{
+    text-align: center; 
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    padding: 20px;
+    width: 15%;
+    background-color: #fff;
+}
+#accounts thead{
+    box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.15);
+    z-index: 1; 
+    position: relative;
+}
+#accounts tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+#accounts td{
+    padding: 20px;
+    text-align: center;
+    width: 15%;
+    font-size: 16px;
+    position: relative;
+}
+#accounts td:nth-child(3){
+    max-width: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#accounts .password {
+    display: inline-block;
+    max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    user-select: all;
+}
+#accounts td .profile{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+#accounts td .btn{
+    background-color: #4379F2;
+    padding: 13px;
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid #4379F2;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.1s ease-in-out;
+}
+#accounts td .details{
+    margin-right: 4%
+}
+#accounts td .details:hover{
+    background-color: transparent;
+    color: #4379F2;
+    border: 1px solid #4379F2;
+}
+#accounts td .deactivate:hover{
+    background-color: transparent;
+    color: #ff3024;
+    border: 1px solid #ff3024;
+}
+.empty{
+    height: 45vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.empty .no_account{
+    font-size: 22px;
+    color: #4379F2;
+}
+.no_results{
+    font-size: 22px;
+}

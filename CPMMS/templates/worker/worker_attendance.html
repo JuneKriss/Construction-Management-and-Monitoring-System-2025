@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <link rel="stylesheet" href="{% static 'css/worker/worker_attendance.css' %}">
+        <title>Attendance</title>
+    </head>
+    <body>
+        {% include 'worker/worker_header.html' %}
+
+        <section class="container attendance">
+            <div class="page_title">
+                <h3>Attendance Records</h3>
+                <p>Keep track of your attendance, including time in, time out, and its status.</p>
+            </div>
+            <div class="attendance_search">
+                <form method="GET" action="{% url 'worker_attendance' %}">
+                    <div class="search_input">
+                        <label for="filter_project">Filter by Project:</label>
+                        <select name="filter_project" id="filter_project">
+                            <option value="" {% if not request.GET.filter_project %}selected{% endif %}>All</option>
+                            {% for project in projects %}
+                                <option value="{{ project.project_id }}" {% if project.project_id|stringformat:"s" == request.GET.filter_project %}selected{% endif %}>
+                                    {{ project.project_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="search_button">Filter</button>
+                </form>
+            </div>
+            <div class="attendance_container">
+                <!--
+                {% if attendance_records %}
+                {% for attendance in attendance_records %}
+                <div class="attendance_box">
+                    <div class="attendance_head">
+                        <div class="left_attendance_head">
+                            <span class="material-symbols-outlined">schedule</span>
+                            <p>{{ attendance.recorded_at|date:"M d, Y" }}</p>
+                        </div>
+                        <div class="right_attendance_head">
+                            <p class="{% if attendance.period == 'morning'%}morning{% else %} afternoon {% endif %}">{{ attendance.period|capfirst }}</p>
+                        </div>
+                    </div>
+                    <div class="attendance_body">
+                        <div class="record">
+                            <p class="label">Time In</p>
+                            <div class="info">
+                                {% if attendance.time_in %}
+                                    <p>{{ attendance.time_in|time:"H:i" }}</p>
+                                {% else %}
+                                    <p>---</p>
+                                {% endif %}
+                                <p class="status {% if attendance.timeIn_status == 'Present'%}present{% else %}late{% endif %}">{{ attendance.timeIn_status }}</p>
+                            </div>
+                        </div>
+                        <div class="record">
+                            <p class="label">Time Out</p>
+                            <div class="info">
+                                {% if attendance.time_out %}
+                                    <p>{{ attendance.time_out|time:"H:i" }}</p>
+                                    <p class="status {% if attendance.timeOut_status %}{{ attendance.timeOut_status|lower }}{% else %}late{% endif %}">{{ attendance.timeOut_status }}</p>
+                                {% else %}
+                                    <p>---</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="empty">No record of attendance.</p>
+                {% endif %}
+                -->
+                {% if project_attendance_map %}
+                    {% for project, records in project_attendance_map.items %}
+                        <div class="attendance_box">
+                            <h4>{{ project.project_name }}</h4>
+                            <table id="attendance">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>In</th>
+                                        <th>Status</th>
+                                        <th>Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attendance in records %}
+                                        <tr>
+                                            <td>{{ attendance.recorded_at|date:"M d, Y" }}</td>
+                                            <td>{{ attendance.time_in|time:"H:i" }}</td>
+                                            {% if attendance.timeIn_status == 'Present' %}
+                                                <td><p class="present">{{ attendance.timeIn_status }}</p></td>
+                                            {% else %}
+                                                <td><p class="late">{{ attendance.timeIn_status }}</p></td>
+                                            {% endif %}
+                                            <td>
+                                                {% if attendance.time_out %}
+                                                    {{ attendance.time_out|time:"H:i" }}
+                                                {% else %}
+                                                    ---
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No attendance records available.</p>
+                {% endif %}
+            </div>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,52 @@
+{% load static %}
+{% if tasks %}
+    {% for task in tasks %}
+        <tr class="table_row">
+            <td colspan="2">{{ task.task_name }}</td>
+            <td>
+                <div class="status-container">
+                    {% if task.task_status == 'not_started' %}
+                        <span class="status-circle status-not-started"></span>
+                        <p class="not-started-text">Not Started</p>
+                    {% elif task.task_status == 'in_progress' %}
+                        <span class="status-circle status-in-progress"></span>
+                        <p class="in-progress-text">In Progress</p>
+                    {% elif task.task_status == 'halfway' %}
+                        <span class="status-circle status-halfway"></span>
+                        <p class="halfway-text">Halfway Completed</p>
+                    {% elif task.task_status == 'nearly_completed' %}
+                        <span class="status-circle status-nearly-completed"></span>
+                        <p class="nearly-completed-text">Nearly Completed</p>
+                    {% elif task.task_status == 'completed' %}
+                        <span class="status-circle status-completed"></span>
+                        <p class="completed-text">Completed</p>
+                    {% endif %}
+                </div>
+            </td>
+            <td>{{ task.deadline }}</td>
+            <td>{{ task.progress_id.worker_progress }}%</td>
+            <td>
+                {% with task.workers.all|slice:":2" as displayed_workers %}
+                    {% for worker in displayed_workers %}
+                        {% if worker.first_name != 'Not Provided' %}
+                            {{ worker.first_name }}
+                        {% endif %}
+                        {% if worker.last_name != 'Not Provided' %}
+                            {{ worker.last_name }}
+                        {% endif %}
+                        {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                            Names Not Provided
+                        {% endif %}
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if task.workers.all|length > 2 %}
+                        <span class="worker_count">+{{ task.workers.all|length|add:"-2" }} more workers</span> 
+                    {% endif %}
+                {% endwith %}
+            </td>
+            <td><button type="button" class="btn openModal" data-task-id="{{ task.TaskSchedule_id }}">View</button></td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr><td colspan="7" class="empty">No tasks made by this foreman yet.</td></tr>
+{% endif %}

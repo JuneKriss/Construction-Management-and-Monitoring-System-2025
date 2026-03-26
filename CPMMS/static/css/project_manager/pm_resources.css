@@ -1,0 +1,314 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: Poppins, Sans-serif;
+    line-height: 1.5rem;
+}
+body{
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+.content-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+.container {
+    background-color: #F0F4F7;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.container_box{
+    width: 95%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 2%;
+}
+.head{
+    line-height: 2rem;
+    padding: 20px 0px;
+    padding-top: 25px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px;
+}
+.head h1{
+    font-size: 25px;
+    font-weight: 500;
+    color: #333;
+}
+.head p{
+    font-weight: 500;
+    color: #777;
+}
+.box_container{
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-top: 1.5%;
+}
+.resources_box{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    column-gap: 8rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.resource_head{
+    display: flex;
+    flex-direction: column;
+}
+.left_resource_head h3{
+    color: #333;
+    font-weight: 500;
+}
+.right_head{
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+.head_btns{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+.addbtn{
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    color: #fff; 
+    cursor: pointer;
+}
+.addbtn .material-symbols-outlined{
+    color: #fff !important;
+}
+.addbtn:hover{
+    background-color: #0f4eda;
+}
+.total{
+    margin-top: 5%;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+.total .costs{
+    line-height: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+}
+.costs h4{
+    font-weight: 500;
+    color: #777;
+    font-size: 15px;
+}
+.costs p{
+    color: #333;
+}
+.table_con{
+    max-height: 370px;
+    overflow-y: auto; 
+    width: 100%;
+    border-bottom: 1px solid #e5e7eb;
+}
+#resources {
+    width: 100%;
+    border-collapse: collapse;
+    color: #333;
+}
+#resources thead{
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    background-color: #fff;
+}
+#resources thead th {
+    font-size: 16px;
+    text-align: center;
+    padding: 15px 0px;
+    color: #777;
+    border-bottom: 2px solid #e5e7eb;
+}
+#resources tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+#resources td {
+    text-align: center;
+    padding: 20px 0px;
+    font-size: 15px;
+}
+.modal{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.addModal_head,
+.updateModal_head{
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 3%;
+}
+.addModal_head::after,
+.updateModal_head::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f9f9f9;
+}
+.left_addModal_head,
+.left_updateModal_head{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.left_addModal_head .modalAdd_icon,
+.left_updateModal_head .updateModal_icon{
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}   
+.modalAdd_icon .material-symbols-outlined,
+.updateModal_icon .material-symbols-outlined{
+    font-size: 35px;
+    color: #333 !important;
+}
+.addModal_head_text,
+.updateModal_head_text{
+    line-height: 1.5;
+}
+.addModal_head_text h2,
+.updateModal_head_text h2{
+    font-weight: 500;
+}
+.addModal_head_text p,
+.updateModal_head_text p{
+    color: #777777;
+}
+.close {
+    color: #777;
+    float: right;
+    font-size: 40px;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border: 1px solid #888;
+    border-radius: 25px;
+    width: 40%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+#addResourcesForm,
+#updateResourceForm{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: end;
+    row-gap: 1rem;
+    column-gap: 1.5rem;
+}
+#addResourcesForm .addResource_form_group,
+#updateResourceForm .updateResource_form_group{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.two-column{
+    grid-column: span 2;
+}
+#addResourcesForm label,
+#updateResourceForm label{
+    font-size: 14px;
+    color: #333;
+}
+#addResourcesForm input, #addResourcesForm select,
+#updateResourceForm input, #updateResourceForm select{
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #c1c1c1;
+    font-size: 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    width: 100%;
+}
+.action_btns{
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+    position: relative;
+    margin-top: 2%;
+}
+#addResourcesForm .action_btns button,
+.action_btns .submit, .action_btns .delete{
+    margin-top: 2%;
+    width: 25%;
+    padding: 13px;
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 15px;
+}
+#addResourcesForm .action_btns button:hover,
+#updateResourceForm .action_btns .submit:hover{
+    background-color: #0f4eda;
+}
+#updateResourceForm .action_btns .delete:hover{
+    background-color: #ef1717;
+}
+.action_btns .delete{
+    background-color: #f24343ec;
+    border: 1px solid #f24343ec;
+}
+.action_btns::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f9f9f9;
+}
+.table_icon .material-symbols-outlined{
+    font-size: 25px !important;
+    cursor: pointer;
+    color: #333 !important;
+}
+

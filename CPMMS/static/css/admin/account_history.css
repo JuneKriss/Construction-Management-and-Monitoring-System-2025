@@ -1,0 +1,82 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+    font-family: Poppins, Sans-serif;
+}
+.container{
+    max-width: 1536px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}  
+.history_head{
+    margin-top: 1.5%;
+    margin-bottom: 2%;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+#deactivated_accounts{
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 1.5%;
+}
+#deactivated_accounts th{
+    text-align: center; 
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    padding: 20px;
+    width: 15%;
+    background-color: #fff;
+}
+#deactivated_accounts thead{
+    box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.15);
+    z-index: 1; 
+    position: relative;
+}
+#deactivated_accounts tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+#deactivated_accounts td{
+    padding: 20px;
+    text-align: center;
+    width: 15%;
+    font-size: 16px;
+    position: relative;
+}
+#deactivated_accounts td:nth-child(2){
+    max-width: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#deactivated_accounts .password {
+    display: inline-block;
+    max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    user-select: all;
+}
+.status{
+    color: #ff4b41;
+}
+#deactivated_accounts td .btn{
+    background-color: #4379F2;
+    padding: 10px;
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid #4379F2;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.1s ease-in-out;
+}   
+#deactivated_accounts td .btn:hover{
+    background-color: transparent;
+    color: #4379F2;
+    border: 1px solid #4379F2;
+}

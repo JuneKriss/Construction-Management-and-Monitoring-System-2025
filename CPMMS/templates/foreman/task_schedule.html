@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/foreman/foreman_task_schedule.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+        <title>Task Schedule</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'foreman/sidebar.html' %}
+            <div class="main container">
+                <header>
+                    <div class="head">
+                        <div class="head_nav">
+                            <p>Project</p>
+                            <img src="{% static 'icons/next.png' %}" class="nav_icon">
+                            <a href="{% url 'foreman_task_schedule' %}">Task Schedule</a>
+                        </div>
+                        <h1>Task Schedule</h1>
+                    </div>
+                    <nav class="nav_links">
+                        <a href="{% url 'foreman_project' %}">Projects</a>
+                        <a href="{% url 'foreman_task_schedule' %}">Task Schedule</a>
+                    </nav> 
+                </header>
+                <div class="actions">
+                    <div class="left">
+                        <div class="filter_box">
+                            <label for="projects">Project Filter</label>
+                            <select name="projects" id="projects">
+                                {% if filtered_projects %}
+                                <option value="" selected>All</option>
+                                    {% for project in filtered_projects %}
+                                        <option value="{{ project.project_id }}">{{ project.project_name }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                <option value="" selected disabled>No Available Projects</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="addbtn" id="openModal">
+                            <img src="{% static 'icons/create.png' %}" class="addimg" alt="Create">
+                            <a href="#">Schedule Task</a>
+                        </div>
+                    </div>
+                </div>
+                <section class="calendar">
+                    <div id="calendar"></div>
+                </section>
+            </div>
+            <div id="taskModal" class="taskModal">
+                <div class="modal-content">
+                    <div class="taskModal_head">
+                        <span class="close closeModal">&times;</span>
+                        <div class="left_head">
+                            <div class="taskHead_img">
+                                <img src="{% static 'icons/add-task.png' %}" class="addimg">
+                            </div>
+                            <div class="head_text">
+                                <h2>Create Task</h2>
+                                <p>Fill in the data below to schedule a task</p>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="taskForm" action="{% url 'add_taskSchedule' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="foreman_id" value="{{ account.account_id.account_id }}">
+                        <div class="task_form_group two-column">
+                            <label for="taskName">Task Name</label>
+                            <input type="text" id="taskName" name="taskName" required>
+                        </div>
+                        <div class="task_form_group">
+                            <label for="taskStart">Start Date</label>
+                            <input type="date" id="taskStart" name="taskStart" class="start_date" required>
+                        </div>
+                        <div class="task_form_group">
+                            <label for="taskEnd">End Date</label>
+                            <input type="date" id="taskEnd" name="taskEnd" class="end_date" required>
+                        </div>
+                        <div class="task_form_group">
+                            <label for="project">Project</label>
+                            <select name="project" id="project" required>
+                                <option value="" disabled selected>Select a Project</option>
+                                {% for project in projects %}
+                                    {% if project.project_percent != 100 %}
+                                    <option value="{{ project.project_id }}">{{ project.project_name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="task_form_group">
+                            <label for="taskPercentage">Task Percentage From Project</label>
+                            <input type="number" id="taskPercentage" name="taskPercentage" min="1" max="100" required>
+                        </div>
+                        <p id="errorMessage" class="percentageError two-column"></p>
+                        <div class="task_form_group two-column">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="6" cols="50" placeholder="(Optional)"></textarea>
+                        </div>
+                        <div class="task_form_group">
+                            <label for="taskAssignee">Task Assignee/s</label>
+                            <div id="assigneeContainer" class="assigneeContainer">
+                                <select id="taskAssignee" name="taskAssignee[]" required>
+                                    <option value="" disabled selected>Select a Project Worker</option>
+                                    {% for worker in workers %}
+                                        <option value="{{ worker.worker_id }}">
+                                            {% if worker.first_name != 'Not Provided' %}
+                                                {{ worker.first_name }}
+                                            {% endif %}
+                                                            
+                                            {% if worker.last_name != 'Not Provided' %}
+                                                {{ worker.last_name }}
+                                            {% endif %}
+                                                            
+                                            {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                                Names Not Provided
+                                            {% endif %}
+
+                                            ({{ worker.account_id.username }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="task_form_group selectBtns">
+                            <div class="removebtn removeSelect">
+                                <img src="{% static 'icons/remove.png' %}" class="addimg" alt="Add">
+                                <p>Remove</p>
+                            </div>
+                            <div class="addbtn addSelect">
+                                <img src="{% static 'icons/blue-add.png' %}" class="addimg" alt="Add">
+                                <p>Add Another Assignee</p>
+                            </div>
+                        </div>
+                        <div class="task_form_group two-column">
+                            <button type="submit" class="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="eventModal" class="eventModal">
+                <div class="modal-content">
+                    <div class="taskModal_head">
+                        <span class="close closeModal">&times;</span>
+                        <div class="left_head">
+                            <div class="taskHead_img">
+                                <img src="{% static 'icons/details.png' %}" class="addimg">
+                            </div>
+                            <div class="head_text">
+                                <h2 id="eventModalTitle">Project Title</h2>
+                                <p>View and modify the task information.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="taskScheduleForm" action="{% url 'update_taskSchedule' %}" method="post" class="task-details">
+                        {% csrf_token %}
+                        <input type="hidden" id="task_id" name="task_id" value="">
+                        <div class="details_form_group two-column">
+                            <div class="progress-bar">
+                                <span class="progress-text">Task Progress</span>
+                                <div class="progress">
+                                    <div class="progress-fill" id="progressFill">
+                                        <span class="progress-percentage" id="progressPercentage"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="details_form_group">
+                            <label for="taskName">Task Name</label>
+                            <input type="text" id="eventTaskName" name="detailsTaskName" required>
+                        </div>
+                        <div class="task_form_group">
+                            <label for="taskPercentage">Task Percentage From Project</label>
+                            <input type="number" id="eventModalTaskPercentage" name="detailsTaskPercentageFrom" min="1" max="100" required>
+                        </div>
+                        <div class="details_form_group">
+                            <label for="eventModalStart">Start Date</label>
+                            <input type="date" id="eventModalStart" name="detailsStart_date" class="start_date" required>
+                        </div>
+                        <div class="details_form_group">
+                            <label for="eventModalEnd">Due Date</label>
+                            <input type="date" id="eventModalEnd" name="detailsDeadline"  class="end_date" required>
+                        </div>
+                        <div class="details_form_group two-column">
+                            <label for="eventModalDescription">Description</label>
+                            <textarea id="eventModalDescription" name="detailsDescription" rows="6" cols="50"></textarea>
+                        </div>
+                        <div class="details_form_group">
+                            <label for="taskAssignee">Task Assignee/s</label>
+                            <div id="assigneeContainer" class="assigneeContainer">
+                                <select id="taskAssignee" name="detailsTaskAssignee[]">
+                                    <option value="" disabled selected>Select a Project Worker</option>
+                                    {% for worker in workers %}
+                                        <option value="{{ worker.worker_id }}">
+                                            {% if worker.first_name != 'Not Provided' %}
+                                                {{ worker.first_name }}
+                                            {% endif %}
+                                                                                  
+                                            {% if worker.last_name != 'Not Provided' %}
+                                                {{ worker.last_name }}
+                                            {% endif %}
+                                                                                  
+                                            {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                                Names Not Provided
+                                            {% endif %}
+                                                                                  
+                                            ({{ worker.account_id.username }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>                        
+                        <div class="details_form_group selectBtns">
+                            <div class="removebtn removeSelect">
+                                <img src="{% static 'icons/remove.png' %}" class="removeimg" alt="Remove">
+                                <p>Remove</p>
+                            </div>
+                            <div class="addbtn addSelect">
+                                <img src="{% static 'icons/blue-add.png' %}" class="addimg" alt="Add">
+                                <p>Add Another Assignee</p>
+                            </div>
+                        </div>
+                        <div class="details_form_group two-column">
+                            <label for="task_details">Personnels</label>
+                            <table id="task_details">
+                                <thead id="task_details-head">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="task_details-body">
+                                    <tr></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" name="removed_workers" id="removed_workers">       
+                        <div class="details_form_group two-column">
+                            <div class="detailsbtns">
+                                <button class="closebtn" type="button">Delete</button>
+                                <button type="submit" class="submit">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>            
+        </div>
+
+        <script type="text/javascript">
+            const tasksJson = JSON.parse('{{ tasks_json|escapejs }}'); 
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{% static 'javascript/function.js' %}"></script>
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+        <script src="{% static 'javascript/foreman_task_schedule.js' %}"></script>
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: '<h2 style="font-size: 24px; margin: 0;">Task Updated Successfully</h2>',
+                            html: `<p style="font-size: 16px; color: #555; margin-top: 8px;">{{ message }}</p>`,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    {% elif message.tags == 'error' %}
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid Dates",
+                            html: `<p style="font-size: 16px; color: #555;">The deadline cannot be before the start date. Please correct the dates.</p>`,
+                            showConfirmButton: true
+                        });
+                    {% endif %}
+                {% endfor %}
+            </script>
+        {% endif %}
+    </body>
+</html>

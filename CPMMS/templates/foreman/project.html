@@ -1,0 +1,394 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/foreman/foreman_project.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <title>Projects</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'foreman/sidebar.html' %}
+            <div class="main container">
+                <header>
+                    <div class="head">
+                        <div class="head_nav">
+                            <p>Project</p>
+                            <img src="{% static 'icons/next.png' %}" class="nav_icon">
+                            <a href="{% url 'foreman_project' %}">Projects</a>
+                        </div>
+                        <h1>Projects</h1>
+                    </div>
+                    <div class="nav_links">
+                        <a href="{% url 'foreman_project' %}" class="active">Projects</a>
+                        <a href="{% url 'foreman_task_schedule' %}">Task Schedule</a>
+                    </div> 
+                </header>
+                <div class="table_actions">
+                    <div class="left">
+                        <div class="search">
+                            <input type="text" placeholder="Search Project" id="search">
+                            <img src="{% static 'icons/search.png' %}" class="action_icon">
+                        </div>
+                    </div>
+                </div>
+                <section class="projects_table">
+                    <table id="projects">
+                        <thead id="projects-head">
+                            <tr>
+                                <th>Project</th>
+                                <th>Client</th>
+                                <th>Due Date</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-body">
+                            {% if projects %}
+                                {% for project in projects %}
+                                    <tr>
+                                        <td>{{ project.project_name }}</td>
+                                        <td>{{ project.client }}</td>
+                                        <td>{{ project.due_date }}</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-fill" style="width: {{ project.project_percent }}%;">
+                                                    <span class="progress-percentage">{{ project.project_percent }}%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if project.project_status == 'Ongoing' %}
+                                                {% if project.project_percent == 0 %}
+                                                    <p class="not_started">Not Started</p>
+                                                {% elif project.project_percent > 0 and project.project_percent <= 25 %}
+                                                    <p class="initial">Initial Phase</p>
+                                                {% elif project.project_percent > 25 and project.project_percent <= 50 %}
+                                                    <p class="in_progress">In Progress</p>
+                                                {% elif project.project_percent > 50 and project.project_percent <= 75 %}
+                                                    <p class="midway">Midway</p>
+                                                {% elif project.project_percent > 75 and project.project_percent < 100 %}
+                                                    <p class="near_complete">Near Completion</p>
+                                                {% elif project.project_percent == 100 %}
+                                                    <p class="completed">Completed</p>
+                                                {% endif %}
+                                            {% elif project.project_status == 'Onhold' %}
+                                                <p class="onhold">{{ project.project_status }}</p>
+                                            {% elif project.project_status == 'Not Started' %}
+                                                <p class="not_started">{{ project.project_status }}</p>
+                                            {% else %}
+                                                {% if project.finalization_status == "Finalizing" %}
+                                                    <strong style="color: orange;">For Finalization</strong>
+                                                {% elif project.finalization_status == "Completed" %}
+                                                    <strong style="color: green;">Completed</strong>
+                                                {% elif project.finalization_status == "Pending"%}
+                                                    <strong style="color: #FFCF67;">Pending</strong>
+                                                {% else %}
+                                                    <p>{{ project.project_status }}</p>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td><button type="button" class="viewModal" data-id="{{ project.project_id }}">View</button></td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="6">No project assigned to this foreman yet.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+
+        <div id="projectDetailsModal" class="projectDetailsModal">
+            <div class="modal-content">
+                <div class="projectDetails_head">
+                    <span class="close" id="closeModal">&times;</span>
+                    <div class="left_head">
+                        <div class="projectHead_img">
+                            <img src="{% static 'icons/details.png' %}" class="addimg">
+                        </div>
+                        <div class="head_text">
+                            <div class="head_title">
+                                <h2>Project Name - Client</h2>
+                                <div class="task_status" id="modal-task-status">
+                                    <span class="status-circle status-not-started" id="modal-status-circle"></span>
+                                    <p class="not-started-text" id="modal-status-text"></p>
+                                </div>
+                            </div>
+                            <p>Views project details and update supply information as needed.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="progress-bar">
+                        <span class="progress-text">Project Progress</span>
+                        <div class="progress">
+                            <div class="progress-fill" style="width: 0%;" id="modal-progress-fill">
+                                <span class="progress-percentage" id="modal-progress-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_title">
+                        <h4>Project Information</h4>
+                    </div>
+                    <div class="info">
+                        <div class="info_group">
+                            <label for="budget">Budget</label>
+                            <input type="number" min="1" id="budget" name="budget" placeholder="₱" required readonly>
+                        </div>
+                        <div class="info_group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="6" cols="50" placeholder="(Optional)" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_title">
+                        <h4>Project Dates</h4>
+                    </div>
+                    <div class="info">
+                        <div class="info_group">
+                            <label for="start">Start Date</label>
+                            <input type="date" id="start" name="start" readonly>
+                        </div>
+                        <div class="info_group">
+                            <label for="due">Due Date</label>
+                            <input type="date" id="due" name="due" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_title">
+                        <h4>Project Images</h4>
+                    </div>
+                    <div class="info">
+                        <div class="info_group">
+                            <div class="timeframe_btns">
+                                <div class="timeframe_left">
+                                    <label for="">Time Frame</label>
+                                    <button type="button" class="timeframe_btn" id="viewTimeframeBtn">View</button>
+                                </div>
+                                <div id="imageModal" class="imageModal">
+                                    <div class="modal-content">
+                                        <img id="modalImage" alt="Project Time Frame">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="">Download</label>
+                                    <a id="downloadLink" href="#" download="contract.png" class="downloadbtn">
+                                        <img src="{% static 'icons/download.png' %}" class="download">
+                                        <p>Download</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_title">
+                        <h4>Project Personnel</h4>
+                    </div>
+                    <div class="info">
+                        <div class="info_group two-column">
+                            <table id="personnels">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_title">
+                        <h4>Project Tasks</h4>
+                    </div>
+                    <div class="info">
+                        <div class="info_group two-column">
+                            <table id="personnels">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Name</th>
+                                        <th>Start</th>
+                                        <th>Due</th>
+                                        <th>Progress</th>
+                                        <th>Contribution</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="taskBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_title resources_head">
+                        <h4>Project Resources</h4>
+                        <a href="#" class="addbtn" id="addResourceButton">
+                            <img src="{% static 'icons/blue-add.png' %}" class="addBtnimg">
+                            <span>Add Resource</span>    
+                        </a>
+                    </div>
+                    <div class="info">
+                        <div class="info_group two-column">
+                            <table id="resources">
+                                <thead id="resources-head">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Quantity</th>
+                                        <th>Type</th>
+                                        <th>SubType</th>
+                                        <th>Cost</th>
+                                        <th>Cost Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resources-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                    <div class="info save_finished">
+                        <div class="info_group two-column">
+                            <div class="detailsbtns">
+                                <button class="save_btn" type="submit" data-id="">Mark as finished</button>
+                                <button class="unmark_btn" type="submit" data-id="">Remove Mark</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+        <!--ADD RESOURCE MODAL-->
+        <div id="addModal" class="addModal">
+            <div class="modal-content">
+                <div class="addModal_head">
+                    <span class="close closeModal">&times;</span>
+                    <div class="left_addModal_head">
+                        <div class="modalAdd_icon">
+                            <span class="material-symbols-outlined">add_box</span>
+                        </div>
+                        <div class="addModal_head_text">
+                            <h2 id="addModalTitle">Add Resources to The Project</h2>
+                            <p>Complete the form below to add resources to your project.</p>
+                        </div>
+                    </div>
+                </div>
+                <form id="addResourcesForm" method="post">
+                    {% csrf_token %}
+                    <div class="addResource_form_group">
+                        <label for="resource_name">Resource Name</label>
+                        <input type="text" id="resource_name" name="resource_name" required>
+                    </div>
+                    <div class="addResource_form_group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" min="1" required>
+                    </div>
+                    <div class="addResource_form_group">
+                        <label for="type">Type</label>
+                        <select id="type" name="type" required>
+                            <option value="" disabled selected>Resource Type</option>
+                            <option value="material">Material</option>
+                            <option value="supply">Supply</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                    </div>
+                    <div class="addResource_form_group">
+                        <label for="subType">Subtype</label>
+                        <select id="subType" name="subType" required>
+                            <option value="" disabled selected>Resource Subtype</option>
+                        </select>
+                    </div>
+                    <div class="addResource_form_group">
+                        <label for="cost">Cost</label>
+                        <input type="number" min="1" id="cost" name="cost" required>
+                    </div>
+                    <div class="addResource_form_group">
+                        <select name="cost_type" required>
+                            <option value="" disabled selected>Cost Type</option>
+                            <option value="Per Unit">Per Unit</option>
+                            <option value="Overall">Overall</option>
+                        </select>
+                    </div>
+                    <div class="two-column action_btns">
+                        <button type="submit" class="submit">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--ADD RESOURCE MODAL-->
+
+        <!--UPDATE RESOURCE MODAL-->
+        <div id="updateModal" class="updateModal">
+            <div class="modal-content">
+                <div class="updateModal_head">
+                    <span class="close closeModal">&times;</span>
+                    <div class="left_updateModal_head">
+                        <div class="updateModal_icon">
+                            <span class="material-symbols-outlined">Autorenew</span>
+                        </div>
+                        <div class="updateModal_head_text">
+                            <h2 id="updateModalTitle">Make Changes to Resource</h2>
+                            <p>Make changes to the selected resource for this project.</p>
+                        </div>
+                    </div>
+                </div>
+                <form id="updateResourceForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="resource_id" name="resource_id" value="">
+                    <div class="updateResource_form_group">
+                        <label for="updateResource_name">Resource Name</label>
+                        <input type="text" id="updateResource_name" name="updateResource_name" required>
+                    </div>
+                    <div class="updateResource_form_group">
+                        <label for="updateQuantity">Quantity</label>
+                        <input type="number" min="1" id="updateQuantity" name="updateQuantity" required>
+                    </div>
+                    <div class="updateResource_form_group">
+                        <label for="updateType">Type</label>
+                        <select id="updateType" name="updateType" required>
+                            <option value="" disabled selected>Resource Type</option>
+                            <option value="material">Material</option>
+                            <option value="supply">Supply</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                    </div>
+                    <div class="updateResource_form_group">
+                        <label for="updateSubType">Subtype</label>
+                        <select id="updateSubType" name="updateSubType" required>
+                            <option value="" disabled selected>Resource Subtype</option>
+                        </select>
+                    </div>
+                    <div class="updateResource_form_group">
+                        <label for="updateCost">Cost</label>
+                        <input type="number" min="1" id="updateCost" name="updateCost" required>
+                    </div>
+                    <div class="updateResource_form_group">
+                        <select name="updateCostType" required>
+                            <option value="" disabled selected>Cost Type</option>
+                            <option value="Per Unit">Per Unit</option>
+                            <option value="Overall">Overall</option>
+                        </select>
+                    </div>
+                    <div class="two-column action_btns">
+                        <button type="button" class="delete">Delete</button>
+                        <button type="submit" class="submit">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--UPDATE RESOURCE MODAL-->
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{% static 'javascript/foreman_projects.js' %}"></script>
+    </body>
+</html>

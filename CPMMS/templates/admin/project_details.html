@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/admin/project_details.css' %}">
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap"
+    rel="stylesheet">
+  <title>Project Details</title>
+</head>
+
+<body>
+  {% include 'admin/admin_header.html' %}
+  <section class="container details">
+    <form method="POST" enctype="multipart/form-data" action="{% url 'update_project' project.project_id %}"
+      id="projectForm">
+      {% csrf_token %}
+      <div class="details_head">
+        <div class="title">
+          <h2>Project Details</h2>
+        </div>
+        <div class="update">
+          <button type="submit" class="update_btn">Update Project</button>
+        </div>
+      </div>
+      {% if project %}
+      <div class="progress-bar">
+        <span class="progress-text">Project Progress</span>
+        <div class="progress">
+          <div class="progress-fill" style="width: {{ project.project_percent }}%">
+            <span class="progress-percentage">{{ project.project_percent }}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="info_box">
+        <div class="info_title">
+          <h4>Project Information</h4>
+        </div>
+        <div class="info">
+          <div class="info_group two-column">
+            <label for="project_name">Project Name</label>
+            <input type="text" id="project_name" name="project_name" value="{{ project.project_name }}" required>
+          </div>
+          <div class="info_group">
+            <label for="client">Client</label>
+            <input type="text" id="client" name="client" value="{{ project.client }}" required>
+          </div>
+          <div class="info_group">
+            <label for="budget">Budget</label>
+            <input type="number" min="1" id="budget" name="budget" value="{{ project.budget }}" placeholder="₱"
+              required>
+          </div>
+          <div class="info_group two-column">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="6" cols="50"
+              placeholder="(Optional)">{{ project.description }}</textarea>
+          </div>
+        </div>
+      </div>
+      <div class="info_box">
+        <div class="info_title">
+          <h4>Project Dates</h4>
+        </div>
+        <div class="info">
+          <div class="info_group">
+            <label for="start">Start Date</label>
+            <input type="date" id="start" value="{{ project.start_date|date:'Y-m-d' }}" name="start">
+          </div>
+          <div class="info_group">
+            <label for="due">Due Date</label>
+            <input type="date" id="due" value="{{ project.due_date|date:'Y-m-d' }}" name="due">
+          </div>
+        </div>
+      </div>
+      <div class="info_box">
+        <div class="info_title">
+          <h4>Project Images</h4>
+        </div>
+        <div class="info">
+          <div class="info_group">
+            <div class="left">
+              <span>Current Contract Image</span>
+              <div class="contract_img_box" id="contract-img-box">
+                <img id="contract" class="contract" src="{{ project.contract.url }}">
+              </div>
+            </div>
+          </div>
+          <div class="info_group">
+            <div class="right">
+              <span>Actions</span>
+              <div class="actionbtns">
+                <a id="downloadLink" href="{{ project.contract.url }}" download="contract.png" class="downloadbtn">
+                  <img src="{% static 'icons/download.png' %}" class="download">
+                  <p>Download</p>
+                </a>
+                <div class="upload">
+                  <label for="upload" class="upload-btn">Upload new picture</label>
+                  <input type="file" id="upload" accept="image/png, image/jpeg" name="image">
+                  <p id="file-name"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if project.timeframe %}
+        <div class="info">
+          <div class="info_group">
+            <div class="left">
+              <span>Current Timeframe Image</span>
+              <div class="contract_img_box" id="contract-img-box">
+                <img id="timeframe" class="contract" src="{{ project.timeframe.url }}">
+              </div>
+            </div>
+          </div>
+          <div class="info_group">
+            <div class="right">
+              <span>Actions</span>
+              <div class="actionbtns">
+                <a id="downloadLink" href="{{ project.timeframe.url }}" download="contract.png" class="downloadbtn">
+                  <img src="{% static 'icons/download.png' %}" class="download">
+                  <p>Download</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="info_box">
+        <div class="info_title">
+          <h4>Project Personnel</h4>
+        </div>
+        <div class="info">
+          <div class="info_group">
+            <label for="project_manager">Project Manager</label>
+            {% if manager %}
+            <input type="text" id="project_manager" name="project_manager"
+              value="{{ manager.first_name }} {{ manager.last_name }}" readonly>
+            {% endif %}
+          </div>
+          <div class="info_group two-column">
+            <span>Other Personnel</span>
+            <table id="personnel">
+              <thead id="personnel-head">
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody id="personnel-body">
+                {% if foreman %}
+                <tr>
+                  <td>{{ foreman.first_name }} {{ foreman.last_name }}</td>
+                  <td>Foreman</td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="2">No foreman assigned</td>
+                </tr>
+                {% endif %}
+                {% if workers %}
+                {% for worker in workers %}
+                <tr>
+                  <td>{{ worker.first_name }} {{ worker.last_name }}</td>
+                  <td>Worker</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td colspan="4">No workers assigned</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="info_box">
+        <div class="info_title">
+          <h4>Project Resources</h4>
+        </div>
+        <div class="info">
+          <div class="info_group two-column">
+            <span>Resources Table</span>
+            <table id="resources">
+              <thead id="resources-head">
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Type</th>
+                  <th>SubType</th>
+                  <th>Cost</th>
+                  <th>Cost Type</th>
+                </tr>
+              </thead>
+              <tbody id="resources-body">
+                {% if resources %}
+                {% for resource in resources %}
+                <tr>
+                  <td>{{ resource.name }}</td>
+                  <td>{{ resource.quantity }}</td>
+                  <td>{{ resource.get_type_display }}</td>
+                  <td>{{ resource.subtype.name }}</td>
+                  <td>₱ {{ resource.cost }}</td>
+                  <td>{{ resource.cost_type }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td colspan="6">No resources for this project</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </form>
+  </section>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="{% static 'javascript/admin_projectDetails.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/project_manager/pm_projects.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <title>Projects</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'project_manager/sidebar.html' %}
+            <section class="main container">
+                <div class="container_box">
+                    <div class="head">
+                        <div class="head_title">
+                            <h1>Assigned Projects</h1>
+                            <p>View and manage the projects assigned to you.</p>
+                        </div>
+                    </div>
+                    <div class="project_table">
+                        <div class="table_actions">
+                            <div class="search"> 
+                                <input type="text" placeholder="Search Project" id="search">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                        </div>
+                        <table id="projects">
+                            <thead id="projects-head">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Client</th>
+                                    <th>Progress</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projects-body">
+                                {% if projects %}
+                                    {% for project in projects %}
+                                    <tr>
+                                        <td>{{ project.project_name }}</td>
+                                        <td>{{ project.client }}</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-fill" style="width: {{ project.project_percent }}%;">
+                                                    <span class="progress-percentage">{{ project.project_percent }}%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if project.project_status == 'Ongoing' %}
+                                                {% if project.project_percent == 0 %}
+                                                    <p class="not_started">Not Started</p>
+                                                {% elif project.project_percent > 0 and project.project_percent <= 25 %}
+                                                    <p class="initial">Initial Phase</p>
+                                                {% elif project.project_percent > 25 and project.project_percent <= 50 %}
+                                                    <p class="in_progress">In Progress</p>
+                                                {% elif project.project_percent > 50 and project.project_percent <= 75 %}
+                                                    <p class="midway">Midway</p>
+                                                {% elif project.project_percent > 75 and project.project_percent < 100 %}
+                                                    <p class="near_complete">Near Completion</p>
+                                                {% elif project.project_percent == 100 %}
+                                                    <p class="completed">Completed</p>
+                                                {% endif %}
+                                            {% elif project.project_status == 'Onhold' %}
+                                                <p>{{ project.project_status }}</p>
+                                            {% elif project.project_status == 'Not Started' %}
+                                                <p class="not_started">{{ project.project_status }}</p>
+                                            {% else %}
+                                                <p>{{ project.project_status }}</p>
+                                            {% endif %}
+                                        </td>
+                                        <td class="icon">
+                                            <a href="{% url 'PM_edit_project' project.project_id %}"><span class="material-symbols-outlined">edit</span></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">You are not currently not assigned on a project yet.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script src="{% static 'javascript/pm_projects.js' %}"></script>
+    </body>
+</html>

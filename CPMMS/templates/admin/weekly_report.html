@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/admin/weekly_report.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <title>Weekly Construction Activities Report</title>
+    </head>
+    <body>
+        <div class="header">
+            <div class="header_info">
+                <span class="material-symbols-outlined">call</span>
+                <p>0966-328-8742</p>
+            </div>
+            <div class="header_info">
+                <span class="material-symbols-outlined">mail</span>
+                <p>kanoozInquiries@gmail.com</p>
+            </div>
+            <div class="header_info logo">
+                <h3>Kanooz</h3>
+            </div>
+        </div>
+        <div class="body">
+            <h1 class="title">Weekly Construction Activities Report</h1>
+            <div class="project_info">
+                <div class="info_box">
+                    <div class="info">
+                        <h4>Project Name</h4>
+                        <p>{{ project.project_name }}</p>
+                    </div>
+                    <div class="info">
+                        <h4>Client</h4>
+                        <p>{{ project.client }}</p>
+                    </div>
+                    <div class="info">
+                        <h4>Contractor</h4>
+                        <p>Kanooz</p>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info">
+                        <h4>Start Date</h4>
+                        <p>{{ project.start_date }}</p>
+                    </div>
+                    <div class="info">
+                        <h4>Due Date</h4>
+                        <p>{{ project.due_date }}</p>
+                    </div>
+                    <div class="info">
+                        <h4>Date</h4>
+                        <p>{{ current_date }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="task_head">
+                <h2 class="task_title">Tasks Report For The Week</h2>
+                <h3>({{ start_of_week }} - {{ end_of_week }})</h3>
+            </div>
+            <div class="task_info">
+                <div class="task_box">
+                    <table id="tasks">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if task_schedules %}
+                                {% for task in task_schedules %}
+                                <tr>
+                                    <td>{{ task.task_name }}</td>
+                                    <td>{{ task.date_start }}</td>
+                                    <td>{{ task.deadline }}</td>
+                                    <td>{{ task.progress_id.worker_progress }}%</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <tr><td colspan="4" style="text-align: center;">No task created this week</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pieGraph">
+                    <canvas id="projectStatus"></canvas>
+                </div>
+            </div>
+            <h2 class="task_title">Resources On Site</h2>
+            <div class="resources_container">
+                <div class="resource_list">
+                    <h4>Materials</h4>
+                    <ul>
+                        {% for resource in materials %}
+                            <li>{{ resource.name }} x{{ resource.quantity }} ({{ resource.subtype }})</li>
+                        {% empty %}
+                            <li>No materials available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="resource_list">
+                    <h4>Supplies</h4>
+                    <ul>
+                        {% for resource in supplies %}
+                            <li>{{ resource.name }} x{{ resource.quantity }} ({{ resource.subtype }})</li>
+                        {% empty %}
+                            <li>No supplies available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="resource_list">
+                    <h4>Equipment</h4>
+                    <ul>
+                        {% for resource in equipment %}
+                            <li>{{ resource.name }} x{{ resource.quantity }} ({{ resource.subtype }})</li>
+                        {% empty %}
+                            <li>No equipment available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div> 
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+           const progress = {{ project.project_percent }};
+            const todo = 100 - progress;
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const canvas = document.getElementById('projectStatus');
+
+                new Chart(canvas, {
+                    type: 'pie',
+                    data: {
+                        labels: [
+                            `To Do (${todo}%)`,
+                            `Progress (${progress}%)`
+                        ],
+                        datasets: [{
+                            data: [todo, progress],
+                            backgroundColor: [
+                                '#4379F2',
+                                'rgb(76, 175, 80)',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 16
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Project Progress',
+                                font: {
+                                    size: 18,
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    bottom: 5
+                                }
+                            }
+                        },
+                        animation: {
+                            onComplete: () => {
+                                window.chartReady = true;
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

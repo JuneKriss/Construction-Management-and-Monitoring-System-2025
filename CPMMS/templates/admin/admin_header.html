@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/admin/admin_header.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title></title>
+    </head>
+    <body>
+        <div class="header_back">
+            <header class="container header">
+                <div class="logo">
+                    <h1>Kanooz</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'admin_accounts' %}">Accounts</a></li>
+                        <li><a href="{% url 'admin_projects' %}">Projects</a></li>
+                    </ul>
+                </nav>
+                <div class="logout">
+                    <a href="{% url 'logout_user' %}" class="logoutbtn">Log Out</a>
+                </div>
+            </header>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/project_manager/pm_editProject.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <title>Update Project</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'project_manager/sidebar.html' %}
+            <section class="main container">
+                <div class="container_box">
+                    <div class="head">
+                        <div class="head_title">
+                            <h1>Edit Project</h1>
+                            <p>Ensure all project details are correct before saving the changes.</p>
+                        </div>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'PM_update_project' project.project_id %}" id="project_container">
+                        {% csrf_token %}
+                        <div class="details_head">
+                            <div class="title">
+                                <h2>Project Details</h2>
+                            </div>
+                            <div class="update">
+                                {% if project %}
+                                    {% if project.finalization_status == "Finalizing" %}
+                                        <button type="submit" class="finish_btn" id="finalize_project_btn">Finalize Project</button>
+                                        <button type="submit" class="update_btn">Save Changes</button>
+                                    {% elif project.finalization_status == "Completed" and project.isFinished %}
+                                        <button type="submit" class="undo_btn" id="finalize_project_btn">Undo Finalization</button>
+                                    {% else %}
+                                    <button type="submit" class="update_btn">Save Changes</button>
+                                    {% endif %}
+                                {% endif %}                    
+                            </div>
+                        </div>
+                        {% if project %}
+                            <div class="progress-bar">
+                                <span class="progress-text">Project Progress</span>
+                                <div class="progress">
+                                    <div class="progress-fill" style="width: {{ project.project_percent }}%">
+                                        <span class="progress-percentage">{{ project.project_percent }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info_box">
+                                <div class="info_title">
+                                    <h4>Project Information</h4>
+                                </div>
+                                <div class="info">
+                                    <div class="info_group two-column">
+                                        <label for="project_name">Project Name</label>
+                                        <input type="text" id="project_name" name="project_name" value="{{ project.project_name }}" required readonly>
+                                    </div>
+                                    <div class="info_group">
+                                        <label for="client">Client</label>
+                                        <input type="text" id="client" name="client" value="{{ project.client }}" required readonly>
+                                    </div>
+                                    <div class="info_group">
+                                        <label for="budget">Budget</label>
+                                        <input type="number" min="1" id="budget" name="budget" value="{{ project.budget }}" placeholder="₱" required readonly>
+                                    </div>
+                                    <div class="last_row two-column">
+                                        <div class="info_group">
+                                            <label for="description">Description</label>
+                                            <textarea id="description" name="description" rows="6" cols="50" placeholder="(Optional)" readonly>{{ project.description }}</textarea>
+                                        </div>
+                                        <div class="info_group">
+                                            <label for="status">Status</label>
+                                            <select name="status" required>
+                                                <option value="" disabled selected>
+                                                    {% if project.project_status %}
+                                                        {{ project.project_status }}
+                                                    {% else %}
+                                                        Select Status
+                                                    {% endif %}
+                                                </option>
+                                                <option value="Ongoing" {% if project.project_status == "Ongoing" %} selected {% endif %}>Ongoing</option>
+                                                <option value="Onhold" {% if project.project_status == "Onhold" %} selected {% endif %}>Onhold</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info_box">
+                                <div class="info_title">
+                                    <h4>Project Dates</h4>
+                                </div>
+                                <div class="info">
+                                    <div class="info_group">
+                                        <label for="start">Start Date</label>
+                                        <input type="date" id="start"  value="{{ project.start_date|date:"Y-m-d" }}" name="start" readonly>
+                                    </div>
+                                    <div class="info_group">
+                                        <label for="due">Due Date</label>
+                                        <input type="date" id="due"  value="{{ project.due_date|date:"Y-m-d" }}" name="due" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info_box">
+                                <div class="info_title">
+                                    <h4>Project Images</h4>
+                                </div>
+                                <div class="info">
+                                    <div class="info_group">
+                                        <div class="contract_btns">
+                                            <div class="contract_left">
+                                                <label for="">Contract</label>
+                                                <button type="button" class="contract_btn" id="viewContractBtn" data-contract-url="{{ project.contract.url }}">View</button>
+                                            </div>
+                                            <div id="imageModal" class="modal">
+                                                <div class="modal-content">
+                                                    <img id="modalImage" src="" alt="Project Contract">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label for="">Download</label>
+                                                <a id="downloadLink" href="{{ project.contract.url }}" download="contract.png" class="downloadbtn">
+                                                    <img src="{% static 'icons/download.png' %}" class="download">
+                                                    <p>Download</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="info_group">
+                                        <div class="timeframe_btns">
+                                            <div class="left_timeframe">
+                                                {% if project.timeframe %}
+                                                    <label for="">Time Frame</label>
+                                                    <button type="button" class="contract_btn" id="viewTimeFrameBtn" data-timeframe-url="{{ project.timeframe.url }}">View</button>
+                                                {% endif %}                       
+                                            </div>
+                                            <div class="upload">
+                                                {% if not project.timeframe %}
+                                                    <label for="">Time Frame</label>
+                                                {% endif %}
+                                                {% if project.finalization_status != "Completed" and not project.isFinished %}
+                                                <div class="upload_group">
+                                                    <label for="upload" class="upload-btn">Upload Picture</label>
+                                                    <input type="file" id="upload" accept="image/png, image/jpeg" name="timeframe">
+                                                    <p id="file-name"></p>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info_box">
+                                <div class="info_title">
+                                    <h4>Project Personnel</h4>
+                                </div>
+                                <div class="info">
+                                    <div class="info_group">
+                                        <label for="foreman">Foreman</label>
+                                        <select name="foreman" {% if project.assigned_foreman %} disabled {% endif %}>
+                                            <option value="" selected>
+                                                {% if project.assigned_foreman %}
+                                                    {% if project.assigned_foreman.first_name != 'Not Provided' %}
+                                                        {{ project.assigned_foreman.first_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if project.assigned_foreman.last_name != 'Not Provided' %}
+                                                        {{ project.assigned_foreman.last_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if project.assigned_foreman.first_name == 'Not Provided' and project.assigned_foreman.last_name == 'Not Provided' %}
+                                                        Names Not Provided
+                                                    {% endif %}
+
+                                                    ({{ project.assigned_foreman.account_id.username }})
+                                                {% else %}
+                                                    Select
+                                                {% endif %}
+                                            </option>
+                                            {% for foreman in foremen %}
+                                                <option value="{{ foreman.personnel_id }}">
+                                                    {% if foreman.first_name != 'Not Provided' %}
+                                                        {{ foreman.first_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if foreman.last_name != 'Not Provided' %}
+                                                        {{ foreman.last_name }}
+                                                    {% endif %}
+                                                                    
+                                                    {% if foreman.first_name == 'Not Provided' and foreman.last_name == 'Not Provided' %}
+                                                        Names Not Provided
+                                                    {% endif %}
+
+                                                    ({{ foreman.account_id.username }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <p class="note">
+                                            {% if project.assigned_foreman %}
+                                                This project already has a foreman assigned, and the selection cannot be changed.
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="info_group">
+                                        <p class="reminder"><strong>Note:</strong> Once you save your changes, the selected foreman will be permanently assigned to this project and cannot be changed later. Please ensure your selection is final before proceeding.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info_box">
+                                <div class="info_title">
+                                    <h4>Project Resources</h4>
+                                </div>
+                                <div class="info">
+                                    <div class="info_group two-column">
+                                        <table id="resources">
+                                            <thead id="resources-head">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Type</th>
+                                                    <th>SubType</th>
+                                                    <th>Cost</th>
+                                                    <th>Cost Type</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="resources-body">
+                                                {% if resources %}
+                                                    {% for resource in resources %}
+                                                    <tr>
+                                                        <td>{{ resource.name }}</td>
+                                                        <td>{{ resource.quantity }}</td>
+                                                        <td>{{ resource.get_type_display }}</td>
+                                                        <td>{{ resource.subtype.name }}</td>
+                                                        <td>₱ {{ resource.cost }}</td>
+                                                        <td>{{ resource.cost_type }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="5" style="text-align: center;">No resources available for this project.</td>
+                                                    </tr>
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            const updateProjectUrl = "{% url 'PM_update_project' project.project_id %}";
+            const finalizeProjectUrl = "{% url 'PM_finalize_project' project.project_id %}";
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{% static 'javascript/pm_editProject.js' %}"></script>
+    </body>
+</html>

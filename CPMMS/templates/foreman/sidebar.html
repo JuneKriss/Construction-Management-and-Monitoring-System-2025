@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/foreman/foreman_sidebar.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title>Home</title>
+    </head>
+    <body>
+        <div class="sidebar">
+            <nav class="nav">
+                <div class="logo">
+                    <h1>Kanooz</h1>
+                </div>
+                <ul>
+                    <li class="active">
+                        <a href="{% url 'foreman_home' %}">
+                            <img src="{% static 'icons/home.png' %}" class="nav_icons">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button onclick="toggleSubMenu(this)" class="dropdown-btn">
+                            <img src="{% static 'icons/worker.png' %}" class="nav_icons">
+                            <span>Worker</span>
+                            <img src="{% static 'icons/down.png' %}" class="nav_icons">
+                        </button>
+                        <ul class="sub-menu">
+                            <div>
+                                <li><a href="{% url 'foreman_attendance' %}">Attendance</a></li>
+                                <li><a href="{% url 'foreman_progress' %}">Progress</a></li>
+                            </div>
+                        </ul>
+                    </li>
+                    <li>  
+                        <a href="{% url 'foreman_project' %}">
+                            <img src="{% static 'icons/project.png' %}" class="nav_icons">
+                            <span>Project</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="account">
+                <div class="account_details">
+                    <button onclick="toggleSubMenu(this)" class="dropdown-btn">
+                        <img src="{{ account.account_id.image.url }}" class="profile">
+                        <div class="details">
+                            <h4>{{ account.account_id.username }}</h4>
+                            <p >{{ account.account_id.get_role_display }}</p>
+                        </div>
+                        <img src="{% static 'icons/down.png' %}" class="acc-toggle">
+                    </button>
+                    <ul class="sub-menu">
+                        <div>
+                            <li><a href="{% url 'foreman_account' %}">Account</a></li>
+                            <li><a href="{% url 'logout_user' %}">Log out</a></li>
+                        </div>
+                    </ul>
+                </div>   
+            </div>
+        </div>
+
+        <script src="{% static 'javascript/foreman_sidebar.js' %}"></script>
+    </body>
+</html>

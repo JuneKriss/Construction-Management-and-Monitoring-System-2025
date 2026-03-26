@@ -1,0 +1,775 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'css/admin/admin_home.css' %}" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <title>Dashboard</title>
+  </head>
+  <body>
+    {% include 'admin/admin_header.html' %}
+    <section class="container">
+      <div class="printbtn_container">
+        <div class="left">
+          <h4>Print a project's report for the week</h4>
+          <div class="buttons_container">
+            <div class="select_input">
+              <label for="projects">Projects</label>
+              <select name="projects" id="projects">
+                <option value="" selected>Select Project</option>
+                {% for project in projects %}
+                <option value="{{ project.project_id }}">
+                  {{ project.project_name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <a href="#" class="print_btn">
+              <span class="material-symbols-outlined">print</span>
+              <p>Print</p>
+            </a>
+          </div>
+        </div>
+        <div class="right">
+          <h4>Download Reports by Project and Category</h4>
+          <div class="print_options">
+            <div class="buttons_container">
+              <div class="select_input">
+                <label for="projects">Projects</label>
+                <select name="projects" id="projectSelect">
+                  <option value="all" selected>All</option>
+                  {% for project in projects %}
+                  <option value="{{ project.project_id }}">
+                    {{ project.project_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="select_input">
+                <label for="report_type">Report Category</label>
+                <select name="report_type" id="reportCategory">
+                  <option value="" selected>Select Category</option>
+                  <option value="overall">Overall</option>
+                  <option value="attendance">Attendance</option>
+                  <option value="payroll">Payroll</option>
+                </select>
+              </div>
+              <a href="#" class="print_btn" id="printButton">
+                <span class="material-symbols-outlined">download</span>
+                <p>Download</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box_container">
+        <div class="count_box">
+          <div class="box_header">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h4>Total Accounts</h4>
+          </div>
+          <div class="box_body">
+            <h3>{{ total_accounts }}</h3>
+            <p>All active & deactivated accounts</p>
+          </div>
+        </div>
+        <div class="count_box">
+          <div class="box_header">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h4>Total Foreman Accounts</h4>
+          </div>
+          <div class="box_body">
+            <h3>{{ total_foreman_accounts }}</h3>
+            <p>All active & deactivated accounts</p>
+          </div>
+        </div>
+        <div class="count_box">
+          <div class="box_header">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h4>Total Project Manager Accounts</h4>
+          </div>
+          <div class="box_body">
+            <h3>{{ total_pm_accounts }}</h3>
+            <p>All active & deactivated accounts</p>
+          </div>
+        </div>
+        <div class="count_box">
+          <div class="box_header">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h4>Total Worker Accounts</h4>
+          </div>
+          <div class="box_body">
+            <h3>{{ total_worker_accounts }}</h3>
+            <p>All active & deactivated accounts</p>
+          </div>
+        </div>
+      </div>
+      <div class="barPies">
+        <div class="bar_graph">
+          <canvas id="projectExpenditure"></canvas>
+        </div>
+        <div class="pies">
+          <div class="doughnut">
+            <canvas id="projectStatus"></canvas>
+          </div>
+          <div class="pie">
+            <canvas id="userStatus"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="barGraphs">
+        <div class="chart">
+          <canvas id="groupedBarChart"></canvas>
+        </div>
+        <div class="chart">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <script src="{% static 'javascript/function.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+                                                                        document.querySelector('.print_btn').addEventListener('click', function (e) {
+                                                                                                                              e.preventDefault();
+                                                                                                                              const selectedProjectId = document.getElementById('projects').value;
+
+                                                                                                                              if (selectedProjectId) {
+                                                                                                                                  const reportURL = `/project_report/${selectedProjectId}/`;
+                                                                                                                                  const printWindow = window.open(reportURL, '_blank');
+
+                                                                                                                                  printWindow.onload = function () {
+                                                                                                                                      const checkChartReady = setInterval(() => {
+                                                                                                                                          if (printWindow.chartReady) {
+                                                                                                                                              clearInterval(checkChartReady);
+                                                                                                                                              printWindow.print();
+                                                                                                                                          }
+                                                                                                                                      }, 100);
+                                                                                                                                  };
+                                                                                                                              } else {
+                                                                                                                                  alert('Please select a project to print the report.');
+                                                                                                                              }
+                                                                                                                          });
+
+                                                                                                                            const projectExpenditure = document.getElementById('projectExpenditure');
+                                                                                                                            const projectStatus = document.getElementById('projectStatus');
+                                                                                                                            const userStatus = document.getElementById('userStatus');
+                                                                                                                            const groupedBarChart = document.getElementById('groupedBarChart');
+                                                                                                                            const lineChart = document.getElementById('lineChart');
+                                                                                                                            let delayed;
+
+                                                                                                                            new Chart(projectExpenditure, {
+                                                                                                                              type: 'bar',
+                                                                                                                              data: {
+                                                                                                                                  labels: {{ recent_project_names|safe }},
+                                                                                                                                  datasets: [{
+                                                                                                                                      data: {{ overall_expenditures|safe }},
+                                                                                                                                      backgroundColor: [
+                                                                                                                                          'rgba(255, 105, 115, 0.8)',
+                                                                                                                                          'rgba(100, 149, 237, 0.8)',
+                                                                                                                                          'rgba(255, 204, 77, 0.8)',
+                                                                                                                                          'rgba(60, 179, 113, 0.8)',
+                                                                                                                                          'rgba(186, 85, 211, 0.8)'
+                                                                                                                                      ],
+                                                                                                                                      borderColor: [
+                                                                                                                                          'rgba(255, 105, 115, 1)',
+                                                                                                                                          'rgba(100, 149, 237, 1)',
+                                                                                                                                          'rgba(255, 204, 77, 1)',
+                                                                                                                                          'rgba(60, 179, 113, 1)',
+                                                                                                                                          'rgba(186, 85, 211, 1)'
+                                                                                                                                      ],
+                                                                                                                                      borderWidth: 1
+                                                                                                                                  }]
+                                                                                                                              },
+                                                                                                                              options: {
+                                                                                                                                  responsive: true,
+                                                                                                                                  plugins: {
+                                                                                                                                      legend: {
+                                                                                                                                          display: false
+                                                                                                                                      },
+                                                                                                                                      title: {
+                                                                                                                                          display: true,
+                                                                                                                                          text: 'Expenditure Overview of the 5 Most Recent Projects'
+                                                                                                                                      }
+                                                                                                                                  },
+                                                                                                                                  scales: {
+                                                                                                                                      y: {
+                                                                                                                                          beginAtZero: true
+                                                                                                                                      }
+                                                                                                                                  },
+                                                                                                                                  animation: {
+                                                                                                                                      onComplete: () => {
+                                                                                                                                          delayed = true;
+                                                                                                                                      },
+                                                                                                                                      delay: (context) => {
+                                                                                                                                          let delay = 0;
+                                                                                                                                          if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                                                                                                                                              delay = context.dataIndex * 300 + context.datasetIndex * 100;
+                                                                                                                                          }
+                                                                                                                                          return delay;
+                                                                                                                                      }
+                                                                                                                                  }
+                                                                                                                              }
+                                                                                                                          });
+
+
+                                                                                                                            new Chart(projectStatus, {
+                                                                                                                              type: 'doughnut',
+                                                                                                                              data: {
+                                                                                                                                labels: [
+                                                                                                                                  'Finished',
+                                                                                                                                  'Underway',
+                                                                                                                                ],
+                                                                                                                                datasets: [{
+                                                                                                                                      label: 'Project Progress Status',
+                                                                                                                                      data: [{{ finished_projects }}, {{ ongoing_projects }}],
+                                                                                                                                      backgroundColor: [
+                                                                                                                                        'rgb(119, 221, 119)',
+                                                                                                                                        'rgb(255, 99, 99)',
+                                                                                                                                      ],
+                                                                                                                                      hoverOffset: 4
+                                                                                                                                    }]
+                                                                                                                                  },
+                                                                                                                                  options: {
+                                                                                                                                    responsive: true,
+                                                                                                                                    plugins: {
+                                                                                                                                      legend: {
+                                                                                                                                        position: 'top',
+                                                                                                                                      },
+                                                                                                                                      title: {
+                                                                                                                                        display: true,
+                                                                                                                                        text: 'Project Progress Status'
+                                                                                                                                      }
+                                                                                                                                    }
+                                                                                                                                  }
+                                                                                                                                });
+
+                                                                                                                            new Chart(userStatus, {
+                                                                                                                              type: 'pie',
+                                                                                                                              data: {
+                                                                                                                                labels: ['Active', 'Deactivated'],
+                                                                                                                                datasets: [{
+                                                                                                                                  label: 'Account Status',
+                                                                                                                                  data: [{{ active_count }}, {{ deactivated_count }}],
+                                                                                                                                  backgroundColor: [
+                                                                                                                                    'rgb(119, 221, 119)',
+                                                                                                                                    'rgb(255, 99, 99)',
+                                                                                                                                  ],
+                                                                                                                                  hoverOffset: 4
+                                                                                                                                }]
+                                                                                                                              },
+                                                                                                                              options: {
+                                                                                                                                responsive: true,
+                                                                                                                                plugins: {
+                                                                                                                                  legend: {
+                                                                                                                                    position: 'top',
+                                                                                                                                  },
+                                                                                                                                  title: {
+                                                                                                                                    display: true,
+                                                                                                                                    text: 'Account Status'
+                                                                                                                                  }
+                                                                                                                                }
+                                                                                                                              }
+                                                                                                                            });
+
+                                                                                                                            new Chart(lineChart, {
+                                                                                                                              type: 'line',
+                                                                                                                              data: {
+                                                                                                                                  labels: {{ labels|safe }},
+                                                                                                                                  datasets: [{
+                                                                                                                                      label: 'Projects per Month',
+                                                                                                                                      data: {{ data|safe }},
+                                                                                                                                      fill: false,
+                                                                                                                                      borderColor: 'rgb(67, 121, 242)',
+                                                                                                                                      tension: 0.1,
+                                                                                                                                      borderWidth: 2, // Optional: Adjust for better visibility
+                                                                                                                                      pointRadius: 3, // Optional: Show points on the line
+                                                                                                                                  }]
+                                                                                                                              },
+                                                                                                                              options: {
+                                                                                                                                  responsive: true,
+                                                                                                                                  plugins: {
+                                                                                                                                      legend: {
+                                                                                                                                          position: 'top',
+                                                                                                                                      },
+                                                                                                                                      title: {
+                                                                                                                                          display: true,
+                                                                                                                                          text: 'Monthly Projects Count'
+                                                                                                                                      }
+                                                                                                                                  },
+                                                                                                                                  scales: {
+                                                                                                                                      x: {
+                                                                                                                                          title: {
+                                                                                                                                              display: true,
+                                                                                                                                              text: 'Months'
+                                                                                                                                          },
+                                                                                                                                          type: 'category', // Adjust based on `labels` format
+                                                                                                                                      },
+                                                                                                                                      y: {
+                                                                                                                                          beginAtZero: true,
+                                                                                                                                          title: {
+                                                                                                                                              display: true,
+                                                                                                                                              text: 'Number of Projects'
+                                                                                                                                          }
+                                                                                                                                      }
+                                                                                                                                  },
+                                                                                                                                  animation: {
+                                                                                                                                      onComplete: () => {
+                                                                                                                                          delayed = true;
+                                                                                                                                      },
+                                                                                                                                      delay: (context) => {
+                                                                                                                                          let delay = 0;
+                                                                                                                                          if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                                                                                                                                              delay = context.dataIndex * 100 + context.datasetIndex * 50; // Reduced delays
+                                                                                                                                          }
+                                                                                                                                          return delay;
+                                                                                                                                      }
+                                                                                                                                  },
+                                                                                                                                  interaction: {
+                                                                                                                                      intersect: false,
+                                                                                                                                  }
+                                                                                                                              }
+                                                                                                                          });
+
+
+                                                                                                                            new Chart(groupedBarChart, {
+                                                                                                                                type: "bar",
+                                                                                                                                data: {
+                                                                                                                                    labels: {{ recent_project_names|safe }},
+                                                                                                                                    datasets: [
+                                                                                                                                        {
+                                                                                                                                            label: "Payroll Cost",
+                                                                                                                                            data: {{ payroll_costs|safe }},
+                                                                                                                                            backgroundColor: "rgba(34, 139, 34, 0.6)",
+                                                                                                                                            borderColor: "rgba(34, 139, 34, 1)",
+                                                                                                                                            borderWidth: 1,
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            label: "Supplies Cost",
+                                                                                                                                            data: {{ resource_costs|safe }},
+                                                                                                                                            backgroundColor: "rgba(70, 130, 180, 0.6)",
+                                                                                                                                            borderColor: "rgba(70, 130, 180, 1)",
+                                                                                                                                            borderWidth: 1,
+                                                                                                                                        },
+                                                                                                                                    ],
+                                                                                                                                },
+                                                                                                                                options: {
+                                                                                                                                    responsive: true,
+                                                                                                                                    plugins: {
+                                                                                                                                        legend: {
+                                                                                                                                            position: "top",
+                                                                                                                                        },
+                                                                                                                                        title: {
+                                                                                                                                            display: true,
+                                                                                                                                            text: "Breakdown of Costs for Recent Projects",
+                                                                                                                                        },
+                                                                                                                                    },
+                                                                                                                                    scales: {
+                                                                                                                                        x: {
+                                                                                                                                            title: {
+                                                                                                                                                display: true,
+                                                                                                                                                text: "Projects",
+                                                                                                                                            },
+                                                                                                                                        },
+                                                                                                                                        y: {
+                                                                                                                                            beginAtZero: true,
+                                                                                                                                            title: {
+                                                                                                                                                display: true,
+                                                                                                                                                text: "Cost (in USD)",
+                                                                                                                                            },
+                                                                                                                                        },
+                                                                                                                                    },
+                                                                                                                                },
+                                                                                                                            });
+
+                                                        document.getElementById("reportCategory").addEventListener("change", function () {
+                                                          let projectSelect = document.getElementById("projectSelect");
+                                                          if (this.value === "overall") {
+                                                              projectSelect.querySelector("option[value='all']").disabled = true;
+                                                              if (projectSelect.value === "all") {
+                                                                  projectSelect.value = ""; // Reset selection
+                                                              }
+                                                          } else {
+                                                              projectSelect.querySelector("option[value='all']").disabled = false;
+                                                          }
+                                                      });
+
+                                                  document.getElementById("printButton").addEventListener("click", function () {
+                                                    let projectSelect = document.getElementById("projectSelect");
+                                                    let projectId = projectSelect.value;
+                                                    let category = document.getElementById("reportCategory").value;
+
+                                                    if (!category) {
+                                                        alert("Please select a report category.");
+                                                        return;
+                                                    }
+
+                                                    if (category === "overall" && projectId === "all") {
+                                                        alert("You cannot select 'All Projects' when 'Overall' is chosen.");
+                                                        return;
+                                                    }
+
+                                                    let url = `/${category}-report/${projectId}/`;
+
+                                                    fetch(url + `?category=${category}`)
+                                                        .then(response => {
+                                                            if (!response.ok) throw new Error("Network response was not ok");
+                                                            return response.json();
+                                                        })
+                                                        .then(data => {
+                                                            if (!data || Object.keys(data).length === 0) {
+                                                                alert(`No ${category} data available.`);
+                                                                return;
+                                                            }
+
+                                                            // Show alert before download starts
+                                                            if (category === "attendance") {
+                                                                generateAttendancePDF(data, projectId);
+                                                            } else if (category === "payroll") {
+                                                                generatePayrollPDF(data, projectId);
+                                                            } else {
+                                                                generateOverallReport(data, projectId);
+                                                            }
+                                                        })
+                                                        .catch(error => console.error("Error fetching data:", error));
+                                                });
+
+
+                                                                                                //ATTENDANCE REPORT
+                                                                                                      const generateAttendancePDF = (data, projectId) => {
+                                                                                                          const { jsPDF } = window.jspdf;
+                                                                                                          let doc = new jsPDF();
+                                                                                                          const pageWidth = doc.internal.pageSize.getWidth();
+                                                                                                          const today = new Date().toLocaleDateString();
+
+                                                                                                          doc.setFont("helvetica");
+                                                                                                          doc.setFontSize(24);
+                                                                                                          doc.setFont(undefined, "bold");
+                                                                                                          doc.setTextColor(255, 204, 0);
+                                                                                                          doc.text("Kanooz", 14, 15);
+                                                                                                          doc.setFontSize(12);
+                                                                                                          doc.setFont(undefined, "italic");
+                                                                                                          doc.setTextColor(0, 0, 0);
+                                                                                                          doc.text(`Generated At: ${today}`, pageWidth - 14, 15, { align: "right" });
+
+                                                                                                          if (projectId !== "all") {
+                                                                                                              let project = data;
+                                                                                                              doc.setFontSize(16);
+                                                                                                              doc.setFont(undefined, "bold");
+                                                                                                              doc.text("Attendance Report", pageWidth / 2, 35, { align: "center" });
+                                                                                                              doc.setFontSize(12);
+                                                                                                              doc.setFont(undefined, "normal");
+                                                                                                              doc.text(`Project: ${project.project_name}`, 14, 50);
+                                                                                                              doc.text(`Project Manager: ${project.project_manager}`, 14, 60);
+                                                                                                              doc.text(`Foreman: ${project.foreman}`, 14, 70);
+
+                                                                                                              let headers = ["#", "Employee Name", "Time In", "Time Out", "Total Hours", "Minutes Late"];
+                                                                                                              let rows = project.attendance.map((entry, index) => [
+                                                                                                                  index + 1,
+                                                                                                                  entry.employee_name,
+                                                                                                                  entry.time_in,
+                                                                                                                  entry.time_out,
+                                                                                                                  entry.total_hours,
+                                                                                                                  entry.minutes_late
+                                                                                                              ]);
+
+                                                                                                              doc.autoTable({ head: [headers], body: rows, startY: 80 });
+                                                                                                              doc.save(`${project.project_name}_Attendance_Report.pdf`);
+                                                                                                          } else {
+                                                                                                              doc.setFontSize(16);
+                                                                                                              doc.setFont(undefined, "bold");
+                                                                                                              doc.text("Attendance Report (All Projects)", pageWidth / 2, 35, { align: "center" });
+
+                                                                                                              let headers = ["#", "Project", "Employee Name", "Time In", "Time Out", "Total Hours", "Minutes Late"];
+                                                                                                              let rows = [];
+                                                                                                              let index = 1;
+
+                                                                                                              data.projects.forEach(project => {
+                                                                                                                  project.attendance.forEach(entry => {
+                                                                                                                      rows.push([
+                                                                                                                          index++,
+                                                                                                                          project.project_name,
+                                                                                                                          entry.employee_name,
+                                                                                                                          entry.time_in,
+                                                                                                                          entry.time_out,
+                                                                                                                          entry.total_hours,
+                                                                                                                          entry.minutes_late
+                                                                                                                      ]);
+                                                                                                                  });
+                                                                                                              });
+
+                                                                                                              doc.autoTable({ head: [headers], body: rows, startY: 50 });
+                                                                                                              doc.save(`Projects_Attendance_Report.pdf`);
+                                                                                                          }
+                                                                                                      }
+
+                                                                                                // PAYROLL REPORT
+                                                                          const generatePayrollPDF = (data, projectId) => {
+                                                                            const { jsPDF } = window.jspdf;
+                                                                            const doc = new jsPDF();
+                                                                            const pageWidth = doc.internal.pageSize.getWidth();
+                                                                            const today = new Date().toLocaleDateString();
+
+                                                                            // Header
+                                                                            const addHeader = () => {
+                                                                                doc.setFont("helvetica");
+                                                                                doc.setFontSize(24);
+                                                                                doc.setFont(undefined, "bold");
+                                                                                doc.setTextColor(255, 204, 0);
+                                                                                doc.text("Kanooz", 14, 15);
+                                                                                doc.setFontSize(12);
+                                                                                doc.setFont(undefined, "italic");
+                                                                                doc.setTextColor(0, 0, 0);
+                                                                                doc.text(`Generated At: ${today}`, pageWidth - 14, 15, { align: "right" });
+                                                                            };
+
+                                                                            // Function to add project table
+                                                                            const addTable = (projectName, workers, totals) => {
+                                                                                let startY = 40; // Reset for each page
+
+                                                                                // Section Header
+                                                                                doc.setFontSize(16);
+                                                                                doc.setFont(undefined, "bold");
+                                                                                doc.text(projectName, pageWidth / 2, startY, { align: "center" });
+                                                                                startY += 10;
+
+                                                                                // Prepare Table Data
+                                                                                const tableData = workers.map((worker, index) => [
+                                                                                    index + 1,
+                                                                                    worker.worker_name,
+                                                                                    worker.bonuses.length > 0
+                                                                                        ? worker.bonuses.map(b => `${b.name}: Php ${b.amount}`).join("\n")
+                                                                                        : "-",
+                                                                                    worker.deductions.length > 0
+                                                                                        ? worker.deductions.map(d => `${d.name}: Php ${d.amount}`).join("\n")
+                                                                                        : "-",
+                                                                                    `Php ${worker.total_bonus}`,
+                                                                                    `Php ${worker.total_deduction}`,
+                                                                                    `Php ${worker.total_amount}`
+                                                                                ]);
+
+                                                                                // Table Headers
+                                                                                const headers = [
+                                                                                    "#",
+                                                                                    "Worker Name",
+                                                                                    "Bonuses",
+                                                                                    "Deductions",
+                                                                                    "Total\nBonuses",
+                                                                                    "Total\nDeductions",
+                                                                                    "Net Total"
+                                                                                ];
+
+                                                                                // AutoTable
+                                                                                doc.autoTable({
+                                                                                    startY,
+                                                                                    head: [headers],
+                                                                                    body: tableData,
+                                                                                    styles: { fontSize: 10, cellPadding: 3 },
+                                                                                    headStyles: { fillColor: [67, 121, 242], textColor: [255, 255, 255], fontStyle: "bold" },
+                                                                                    columnStyles: {
+                                                                                        1: { cellWidth: 35 },
+                                                                                        2: { cellWidth: 40 }, // Wider & better padding for Bonuses
+                                                                                        3: { cellWidth: 40 }  // Wider & better padding for Deductions
+                                                                                    },
+                                                                                    margin: { top: 10, left: 14, right: 14 },
+                                                                                    theme: "grid",
+                                                                                    pageBreak: "auto"
+                                                                                });
+
+                                                                                // Totals Section
+                                                                                let finalY = doc.lastAutoTable.finalY + 11;
+                                                                                doc.setFont(undefined, "bold");
+                                                                                doc.setFontSize(16);
+                                                                                doc.text("Project Totals:", 14, finalY);
+                                                                                finalY += 8;
+                                                                                doc.setFont(undefined, "normal");
+                                                                                doc.setFontSize(14);
+                                                                                doc.text(`Total Bonuses: Php ${totals.total_bonuses}`, 18, finalY);
+                                                                                finalY += 8;
+                                                                                doc.text(`Total Deductions: Php ${totals.total_deductions}`, 18, finalY);
+                                                                                finalY += 8;
+                                                                                doc.text(`Net Total: Php ${totals.total_amount}`, 18, finalY);
+                                                                            };
+
+                                                                            // Single Project Report
+                                                                            if (projectId !== "all") {
+                                                                                addHeader();
+                                                                                addTable(`Payroll Report - ${data.project_name}`, data.workers, data.totals);
+                                                                                doc.save(`${data.project_name}_Payroll_Report.pdf`);
+                                                                            }
+                                                                            // All Projects Report (One Project Per Page)
+                                                                            else {
+                                                                                data.projects.forEach((project, index) => {
+                                                                                    if (index > 0) {
+                                                                                        doc.addPage();  // Add a new page for each project after the first one
+                                                                                    }
+                                                                                    addHeader();  // Add header to each page
+                                                                                    addTable(`Payroll Report - ${project.project_name}`, project.workers, project.totals);
+                                                                                });
+
+                                                                                doc.save(`Projects_Payroll_Report.pdf`);
+                                                                            }
+                                                                        };
+
+                                                                        //Overall Report
+                   const generateOverallReport = (data, projectId) => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+          if (!data || !data.project) {
+              console.error("Error: Project data is missing.");
+              return;
+          }
+
+          const project = data.project;
+          const workers = data.workers || [];
+          const payroll = data.payroll || [];
+          const resources = data.resources || [];
+          const tasks = data.tasks || [];
+
+
+          const formatCurrency = (amount) => `PHP ${amount.toLocaleString()}`;
+
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(24);
+          doc.setTextColor(255, 204, 0);
+          doc.text("Kanooz", 14, 25,);
+
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "italic");
+          doc.setTextColor(0, 0, 0);
+          doc.text(`Generated At: ${today}`, pageWidth - 14, 25, { align: "right" });
+
+
+          doc.setFontSize(18);
+          doc.setFont("helvetica", "bold");
+          doc.text("Overall Project Report", pageWidth / 2, 38, { align: "center" });
+
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "normal");
+          doc.text(`Project: ${project.project_name}`, 14, 50);
+          doc.text(`Project Manager: ${project.project_manager}`, 14, 60);
+          doc.text(`Foreman: ${project.foreman}`, 14, 70);
+          doc.text(`Budget: ${formatCurrency(project.budget)}`, 14, 80);
+          doc.text(`Start Date: ${new Date(project.start_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`, 14, 90);
+          doc.text(`Due Date: ${new Date(project.due_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`, 14, 100);
+
+          const addTable = (title, headers, rows, startY, headColor, rowColor) => {
+              doc.setFontSize(14);
+              doc.setFont("helvetica", "bold");
+              doc.text(title, 14, startY);
+
+              doc.autoTable({
+                  head: [headers],
+                  body: rows,
+                  startY: startY + 5,
+                  theme: "grid",
+                  styles: { fontSize: 10, cellPadding: 3, halign: "center" },
+                  headStyles: { fillColor: headColor, textColor: 255, fontStyle: "bold" },
+                  alternateRowStyles: { fillColor: rowColor },
+                  columnStyles: {
+                      2: { halign: "right" }, // Align amounts to right
+                      3: { halign: "right" }
+                  }
+              });
+
+              return doc.autoTable.previous.finalY + 15;
+          };
+
+          // 📌 Attendance Report (Blue Theme)
+          let payrollTableStartY = addTable(
+              "Attendance Report",
+              ["#", "Employee Name", "Time In", "Time Out", "Total Hours", "Late Time"],
+              workers.length > 0
+                  ? workers.map((entry, index) => [
+                        index + 1,
+                        entry.employee_name,
+                        entry.attendance.length > 0 ? entry.attendance[0].time_in : "-",
+                        entry.attendance.length > 0 ? entry.attendance[0].time_out : "-",
+                        entry.total_hours,
+                        entry.total_late_time
+                    ])
+                  : [["-", "No attendance data available", "-", "-", "-", "-"]],
+              115,
+              [0, 102, 204],
+              [240, 240, 240]
+          );
+
+          // 📌 Payroll Report (Green Theme)
+          let resourcesTableStartY = addTable(
+              "Payroll Report",
+              ["#", "Worker Name", "Total Pay", "Bonuses", "Deductions"],
+              payroll.length > 0
+                  ? payroll.map((entry, index) => [
+                        index + 1,
+                        entry.worker_name,
+                        formatCurrency(entry.total_salary),
+                        formatCurrency(entry.total_bonus),
+                        formatCurrency(entry.total_deduction)
+                    ])
+                  : [["-", "No payroll data available", "-", "-", "-"]],
+              payrollTableStartY,
+              [50, 150, 50],
+              [220, 255, 220]
+          );
+
+          // 📌 Resources Report (Orange Theme)
+          let tasksTableStartY = addTable(
+              "Resources Report",
+              ["#", "Name", "Quantity", "Type", "Sub Type", "Cost", "Added By"],
+              resources.length > 0
+                  ? resources.map((entry, index) => [
+                        index + 1,
+                        entry.name,
+                        entry.quantity,
+                        entry.type,
+                        entry.subtype__name,
+                        formatCurrency(entry.cost),
+                        entry.added_by
+                    ])
+                  : [["-", "No resources available", "-", "-", "-", "-", "-"]],
+              resourcesTableStartY,
+              [200, 100, 50],
+              [255, 230, 200]
+          );
+
+          // 📌 Tasks Report (Purple Theme)
+          addTable(
+              "Tasks Report",
+              ["#", "Task Name", "Start Date", "Due Date", "Assigned Worker", "Status", "Progress (%)"],
+              tasks.length > 0
+                  ? tasks.map((task, index) => [
+                        index + 1,
+                        task.task_name,
+                        new Date(task.start_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+                        new Date(task.due_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+                        task.assigned_worker,
+                        task.status,
+                        `${task.progress}%`
+                    ])
+                  : [["-", "No tasks available", "-", "-", "-", "-", "-"]],
+              tasksTableStartY,
+              [102, 51, 153],
+              [235, 225, 255]
+          );
+
+          // 📄 Save the PDF with Project Name
+          doc.save(`${project.project_name}_Overall_Report.pdf`);
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,193 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins, Sans-serif;
+}
+body {
+  background-color: #f9f9f9;
+}
+.container {
+  max-width: 1536px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 3rem;
+}
+.printbtn_container {
+  width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  margin-top: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  display: flex;
+  justify-content: space-evenly; /* Evenly distribute left & right */
+  align-items: flex-start; /* Align items to the top */
+  gap: 2rem;
+}
+
+.printbtn_container .left,
+.printbtn_container .right {
+  width: 48%; /* Ensure both sections have equal width */
+  display: flex;
+  flex-direction: column;
+}
+
+.printbtn_container h4 {
+  font-weight: 500;
+  color: #333;
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+.buttons_container {
+  width: 100%;
+  display: flex;
+  align-items: end;
+  gap: 1.5rem;
+  padding: 10px;
+}
+
+.select_input {
+  width: 50%; /* Makes both select inputs take equal space */
+  display: flex;
+  flex-direction: column;
+}
+
+.select_input select {
+  width: 100%;
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid #c0c0c0;
+  border-radius: 5px;
+}
+
+.print_btn {
+  display: flex;
+  gap: 6px;
+  background-color: #4379f2;
+  padding: 12px;
+  min-width: 140px;
+  border-radius: 10px;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 17px;
+}
+
+.print_btn p {
+  color: #fff;
+}
+
+.print_btn .material-symbols-outlined {
+  color: #fff !important;
+}
+
+.right .print_options {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.right .buttons_container {
+  width: 100%; /* Ensure consistency with .left */
+}
+.box_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 20px;
+  margin-top: 0.8rem;
+}
+.count_box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  width: 30%;
+  height: 150px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.box_header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.box_header .material-symbols-outlined {
+  color: #4379f2 !important;
+}
+.box_header h4 {
+  font-size: 16px;
+  font-weight: 500;
+}
+.box_body {
+  line-height: 2rem;
+  margin-left: 2.8rem;
+}
+.count_box h3 {
+  font-weight: 500;
+  font-size: 24px;
+}
+.count_box p {
+  font-size: 14px;
+  color: #777;
+}
+.barPies {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+  padding: 20px;
+}
+.barPies .bar_graph {
+  background-color: #fff;
+  width: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.barPies .pies {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+}
+.barPies .doughnut,
+.barPies .pie {
+  width: 85%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.barGraphs {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.barGraphs .chart {
+  flex: 1;
+  max-width: 50%;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.barGraphs canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}

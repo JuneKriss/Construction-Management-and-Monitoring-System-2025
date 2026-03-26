@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/admin/account_details.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title>Account Details</title>
+    </head>
+    <body>
+        {% include 'admin/admin_header.html' %}
+        <section class="container details">
+            <div class="title">
+                <h2>Account Details</h2>
+            </div>
+            <div class="information">
+                <div class="profile">
+                    <div class="profile_left">
+                        <img src="{{ account.image.url }}" class="profile_img">
+                        <div class="overview">
+                            {% if personnel %}
+                                {% if personnel.first_name == 'Not Provided' and personnel.last_name == 'Not Provided' %}
+                                    <h3>Not Provided</h3>
+                                {% else %}
+                                    <h3>{{ personnel.first_name }} {{ personnel.last_name }}</h3>
+                                {% endif %}
+                            {% endif %}
+                            {% if worker %}
+                                {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                    <h3>Not Provided</h3>
+                                {% else %}
+                                    <h3>{{ worker.first_name }} {{ worker.last_name }}</h3>
+                                {% endif %}
+                            {% endif %}
+                            <div class="overview_group">
+                                <p>{{ account.get_role_display }}</p>
+                                <p>Project 1</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile_right">
+                        {% if account.status != 'Deactivated' %}
+                        <a href="{% url 'deactivate_account' account.account_id %}" class="deactivatebtn">
+                            <img src="{% static 'icons/deactivate.png' %}" class="deactivate">
+                            <p>Deactivate</p>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="text">
+                        <h3>Account Information</h3>
+                    </div>
+                    <div class="info">
+                        <div class="divide">
+                            <div class="info_group">
+                                <p>Username</p>
+                                <h4>{{ account.username }}</h4>
+                            </div>
+                            <div class="info_group">
+                                <p>Role</p>
+                                <h4>{{ account.get_role_display }}</h4>
+                            </div>
+                            <!--
+                            <div class="info_group">
+                                <p>Created at</p>
+                                <h4>{{ account.date_created }}</h4>
+                            </div>
+                            -->
+                        </div>
+                        <div class="divide">
+                            <div class="info_group">
+                                <p>Password</p>
+                                <h4>{{ account.password }}</h4>
+                            </div>
+                            <div class="info_group">
+                                <p>Status</p>
+                                <h4>{{ account.status }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="text">
+                        <h3>Personal Information</h3>
+                    </div>
+                    <div class="info">
+                        {% if personnel %}
+                            <div class="divide">
+                                <div class="info_group">
+                                    <p>First Name</p>
+                                    <h4>{{ personnel.first_name }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Birthday</p>
+                                    <h4>{{ personnel.birthdate }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Phone</p>
+                                    <h4>{{ personnel.contact }}</h4>
+                                </div>
+                            </div>
+                            <div class="divide">
+                                <div class="info_group">
+                                    <p>Last Name</p>
+                                    <h4>{{ personnel.last_name }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Gender</p>
+                                    <h4>{{ personnel.gender }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Address</p>
+                                    <h4>{{ personnel.address }}</h4>
+                                </div>
+                            </div>
+                            <div class="divide">
+                                <div class="info_group">
+                                    <p>Email Address</p>
+                                    <h4>{{ personnel.email }}</h4>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if worker %}
+                            <div class="divide">
+                                <div class="info_group">
+                                    <p>First Name</p>
+                                    <h4>{{ worker.first_name }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Age</p>
+                                    <h4>{{ worker.age }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Phone</p>
+                                    <h4>{{ worker.contact }}</h4>
+                                </div>
+                            </div>
+                            <div class="divide">
+                                <div class="info_group">
+                                    <p>Last Name</p>
+                                    <h4>{{ worker.last_name }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Gender</p>
+                                    <h4>{{ worker.gender }}</h4>
+                                </div>
+                                <div class="info_group">
+                                    <p>Address</p>
+                                    <h4>{{ worker.address }}</h4>
+                                </div>
+                            </div>
+                            <div class="divide">
+                                <p>QR Code</p>
+                                {% if worker.qr_code %}
+                                <div class="qr_box">
+                                    <img id="qr_code" class="qr_code" src="{{ worker.qr_code.url }}" alt="QR Code for {{ worker.first_name }} {{ worker.last_name }}">
+                                    <a id="downloadLink" href="{{ worker.qr_code.url }}" download="qr_code.png" class="downloadbtn">
+                                        <img src="{% static 'icons/download.png' %}" class="download">
+                                        <p>Download</p>
+                                    </a>
+                                </div>
+                                {% else %}
+                                    <h4>No QR Code available for this worker.</h4>
+                                {% endif %}
+                            </div>
+                            <div id="qrModal" class="modal">
+                                <span class="close">&times;</span>
+                                <img class="modal-content" id="qrImg">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <script src="{% static 'javascript/admin_accountDetails.js' %}"></script>
+    </body>
+</html>

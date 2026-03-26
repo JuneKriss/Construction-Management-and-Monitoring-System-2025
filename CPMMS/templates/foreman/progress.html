@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/foreman/foreman_progress.css' %}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap"
+      rel="stylesheet"
+    />
+    <title>Worker Progress</title>
+  </head>
+  <body>
+    <div class="content-container">
+      {% include 'foreman/sidebar.html' %}
+      <div class="main container">
+        <header>
+          <div class="head">
+            <div class="head_nav">
+              <p>Worker</p>
+              <img src="{% static 'icons/next.png' %}" class="nav_icon" />
+              <a href="{% url 'foreman_progress' %}">Progress</a>
+            </div>
+            <h1>Worker Progress</h1>
+          </div>
+          <nav class="nav_links">
+            <a href="{% url 'foreman_progress' %}" class="active">Progress</a>
+          </nav>
+        </header>
+        <div class="table_components">
+          <div class="left">
+            <div class="search">
+              <input type="text" placeholder="Search Task Name" id="search" />
+              <img src="{% static 'icons/search.png' %}" class="action_icon" />
+            </div>
+            <div class="filter_box">
+              <label for="projects">Project Filter</label>
+              <select name="projects" id="projects">
+                {% if projects %}
+                <option value="" selected>All</option>
+                {% for project in projects %}
+                <option value="{{ project.project_id }}">
+                  {{ project.project_name }}
+                </option>
+                {% endfor %} {% else %}
+                <option value="" selected disabled>
+                  No Projects Available
+                </option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="right">
+            <div class="progress-bar hidden" id="progress-bar">
+              <span class="progress-text">Project Progress</span>
+              <div class="progress">
+                <div class="progress-fill" id="ProgressFill">
+                  <span
+                    class="progress-percentage"
+                    id="ProgressPercentage"
+                  ></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <section class="container progress_table">
+          <table id="progress">
+            <thead id="progress-head">
+              <tr>
+                <th colspan="2">Task Name</th>
+                <th>Status</th>
+                <th>Deadline</th>
+                <th>Progress</th>
+                <th>Assigned For</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="task-table-body">
+              {% include 'foreman/components/task_table.html' %}
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <div id="taskDetailsModal" class="taskDetailsModal">
+        <div class="modal-content">
+          <div class="taskModal_head">
+            <span class="close closeModal">&times;</span>
+            <div class="left_head">
+              <div class="taskHead_img">
+                <img src="{% static 'icons/details.png' %}" class="addimg" />
+              </div>
+              <div class="head_text">
+                <div class="head_title">
+                  <h2>Task Name</h2>
+                  <div class="task_status">
+                    <span class="status-circle status-not-started"></span>
+                    <p class="not-started-text"></p>
+                  </div>
+                </div>
+                <p>View and update task progress</p>
+              </div>
+            </div>
+          </div>
+          <form action="" method="" class="task_details">
+            {% csrf_token %}
+            <div class="details_form_group two-column">
+              <div class="progress-bar">
+                <span class="progress-text">Task Progress</span>
+                <div class="progress">
+                  <div class="progress-fill" id="detailsProgressFill">
+                    <span
+                      class="progress-percentage"
+                      id="detailsProgressPercentage"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="details_form_group">
+              <label for="start_date">Start Date</label>
+              <input type="date" id="start_date" readonly />
+            </div>
+            <div class="details_form_group">
+              <label for="due_date">Due Date</label>
+              <input type="date" id="due_date" readonly />
+            </div>
+            <div class="details_form_group two-column">
+              <label for="assignee">Assigned For</label>
+              <table id="assignee">
+                <thead id="assignee-head">
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody id="assignee-body">
+                  <tr></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="details_form_group">
+              <label for="worker_progress">Worker Progress</label>
+              <input
+                type="number"
+                id="worker_progress"
+                name="worker_progress"
+                min="1"
+                max="100"
+                required
+              />
+            </div>
+            <div class="details_form_group">
+              <label for="worker_progress">Percentage From Project</label>
+              <input
+                type="number"
+                id="percentage_from_project"
+                name="percentage_from_project"
+                min="1"
+                max="100"
+                required
+              />
+            </div>
+            <div class="details_form_group two-column">
+              <label for="remarks">Remarks</label>
+              <textarea
+                id="remarks"
+                name="remarks"
+                rows="6"
+                cols="50"
+              ></textarea>
+            </div>
+            <div class="details_form_group two-column">
+              <div class="detailsbtns">
+                <button class="edit_btn" type="button">Edit</button>
+                <button class="save_btn" type="submit">Save</button>
+                <button type="submit" class="submit">Save Changes</button>
+                <button class="closebtn closeModal" type="button">Close</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{% static 'javascript/function.js' %}"></script>
+    <script src="{% static 'javascript/foreman_progress.js' %}"></script>
+  </body>
+</html>

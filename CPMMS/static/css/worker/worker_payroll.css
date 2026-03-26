@@ -1,0 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: Poppins, Sans-serif;
+  line-height: 1.5rem;
+}
+body {
+  background-color: #fff;
+  min-height: 100dvh;
+}
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.page_title {
+  padding: 15px;
+  margin-top: 1.5%;
+  border-bottom: 3px solid #f9f9f9;
+}
+.page_title h3 {
+  font-weight: 500;
+}
+.page_title p {
+  font-size: 13px;
+  color: #777;
+}
+.payroll_info {
+  padding: 10px;
+  margin-top: 1.5%;
+}
+.employee_details {
+  margin-bottom: 20px;
+  line-height: 2rem;
+  font-size: 14px;
+  color: #333;
+}
+.payroll_table {
+  border-collapse: collapse;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  font-size: 14px;
+}
+.payroll_table thead {
+  padding: 20px;
+  background-color: #4379f2;
+  color: #fff;
+}
+.payroll_table th {
+  text-align: center;
+  font-weight: 600;
+  padding: 15px;
+}
+.payroll_table td:not(.separator td) {
+  padding: 20px;
+  border-bottom: 3px solid #f9f9f9;
+}
+.payroll_table tfoot {
+  background-color: #fff;
+  color: #333;
+}
+.payroll_table .separator {
+  background-color: #4379f2;
+  border-top: 3px solid #ddd;
+  text-align: center;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+}
+.payroll_table .separator td{
+  padding: 8px;
+}
+.printBtn_container {
+  margin-top: 5%;
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.print_btn {
+  display: flex;
+  gap: 6px;
+  background-color: #4379f2;
+  padding: 10px;
+  width: 38%;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+.print_btn p {
+  color: #fff;
+  font-size: 17px;
+}
+.print_btn .material-symbols-outlined {
+  color: #fff !important;
+}

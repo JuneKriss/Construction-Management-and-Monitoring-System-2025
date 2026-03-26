@@ -1,0 +1,228 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: Poppins, Sans-serif;
+    line-height: 1.5rem;
+}
+body{
+    background-color: #fff;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+.content-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+.container {
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+}
+.main p{
+    color: #777777;
+}
+.main h4{
+    font-weight: 500;
+}
+.container_box{
+    width: 93%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 2%;
+}
+.head{
+    border-bottom: 3px solid #f9f9f9;
+    padding: 20px;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+.head .head_title h4{
+    font-size: 20px;
+}
+.head .head_title p{
+    color: #777777;
+}
+.update_btn{
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+}
+.update_btn:hover{
+    background-color: #0f4eda;
+}
+.profile_box, .settings, .contacts, .personal_info{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 20px;
+    border-bottom: 3px solid #f9f9f9;
+}
+.profile_box .profile_image{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.profile_image .profile_image_details{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.profileImg{
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.profile_image #upload{
+    display: none;
+}
+.upload{
+    max-width: 325px;
+}
+.upload .buttons{
+    display: inline-flex;
+    gap: 1.3rem;
+    margin-bottom: 8px;
+}
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border: 1px solid #d1d1d1;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: #777777;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    text-align: right;
+}
+.upload-btn:hover {
+    background-color: #f9f9f9;
+}
+.upload-btn:active {
+    background-color: #e2e2e2;
+}
+#remove-btn{
+    display: none;
+    padding: 14px 20px;
+    border: 1px solid #d9534f;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: #d9534f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    text-align: right;
+}
+#file-name {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #777777;
+    font-size: 15px;
+}
+.full_name h4{
+    margin-bottom: 1%;
+}
+.full_name .name_inputs, .passwords, .contacts .contact_info, .personal_info .info_group{
+    display: flex;
+    gap: 20%;
+}
+.name_inputs .input_box, .passwords .input_box, .contacts .input_box, .personal_info .input_box{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.input_box label, .settings label, .contacts label, .personal_info label{
+    font-size: 14px;
+    color: #777777;
+    margin-bottom: 2px;
+}
+.input_icon{
+    width: 4%;
+}
+.input_box input{
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    border: 1px solid #777777;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+}
+.input_box input:focus, .username_input input:focus{
+    border: 1px solid #4379F2;
+    outline: none;
+}
+.username_input, .personal_info .address_input{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.input_wrapper, .address_input input{
+    position: relative;
+    width: 80%;
+}
+.passwords .input_wrapper, .contacts .input_wrapper{
+    width: 100%;
+}
+.input_wrapper input {
+    width: 100%;
+    padding: 15px 15px 15px 40px;
+    border-radius: 15px;
+    border: 1px solid #777777;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+}
+.input_icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: #777777;
+}
+.visibility_icon {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Place at the right end */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777777;
+}
+.swal-title {
+    line-height: 1.5;
+}
+.asterisk {
+    position: relative;
+}
+.asterisk::after {
+    content: '*';
+    color: red;
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    font-size: 16px;
+}

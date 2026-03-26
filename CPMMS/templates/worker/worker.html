@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <link rel="stylesheet" href="{% static 'css/worker/worker_home.css' %}">
+        <title>Home</title>
+    </head>
+    <body>
+        {% include 'worker/worker_header.html' %}
+
+        <section class="container project_container">
+            <div class="project_box">
+                <div class="project_head">
+                    <h3>Assigned Project</h3>
+                    <p>View details of your current project assignments.</p>
+                </div>
+                {% if assigned_projects  %}
+                    {% for project in assigned_projects %}
+                    <div class="progress_bar">
+                        <p>Project Progress</p>
+                        <div class="progress">
+                            <div class="progress-fill" style="width: {{ project.project_percent }}%;">
+                                <span class="progress-percentage">{{ project.project_percent }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="info_group">
+                            <div class="info_label">
+                                <span class="material-symbols-outlined">construction</span>
+                                <span>Project Name</span>
+                            </div>
+                            <div class="info">
+                                <p>{{ project.project_name }}</p>
+                            </div>
+                        </div>
+                        <div class="info_group">
+                            <div class="info_label">
+                                <span class="material-symbols-outlined">adjust</span>
+                                <span>Status</span>
+                            </div>
+                            <div class="info info_status">
+                                {% if project.project_status == 'Ongoing' %}
+                                    {% if project.project_percent == 0 %}
+                                        <span class="status-circle status-not_started"></span>
+                                        <p class="not_started-text">Not Started</p>
+                                    {% elif project.project_percent > 0 and project.project_percent <= 25 %}
+                                        <span class="status-circle status-initial"></span>
+                                        <p class="initial-text">Initial Phase</p>
+                                    {% elif project.project_percent > 25 and project.project_percent <= 50 %}
+                                        <span class="status-circle status-in_progress"></span>
+                                        <p class="in_progress-text">In Progress</p>
+                                    {% elif project.project_percent > 50 and project.project_percent <= 75 %}
+                                    <span class="status-circle status-midway"></span>
+                                        <p class="midway-text">Midway</p>
+                                    {% elif project.project_percent > 75 and project.project_percent < 100 %}
+                                    <span class="status-circle status-near_complete"></span>
+                                        <p class="near_complete-text">Near Completion</p>
+                                    {% elif project.project_percent == 100 %}
+                                    <span class="status-circle status-completed"></span>
+                                        <p class="completed-text">Completed</p>
+                                    {% endif %}
+                                {% elif project.project_status == 'Onhold' %}
+                                <span class="status-circle status-onhold"></span>
+                                    <p class="onhold-text">{{ project.project_status }}</p>
+                                {% elif project.project_status == 'Not Started' %}
+                                <span class="status-circle status-not_started"></span>
+                                    <p class="not_started-text">{{ project.project_status }}</p>
+                                {% else %}
+                                    <span class="status-circle status-{{ project.project_status }}"></span>
+                                    <p>{{ project.project_status }}</p>
+                                {% endif %}               
+                            </div> 
+                        </div>
+                        <div class="info_group">
+                            <div class="info_label">
+                                <span class="material-symbols-outlined">group</span>
+                                <span>Client</span>
+                            </div>
+                            <div class="info">
+                                <p>{{ project.client }}</p>
+                            </div>
+                        </div>
+                        <div class="info_group">
+                            <div class="info_label">
+                                <span class="material-symbols-outlined">event</span>
+                                <span>Due Date</span>
+                            </div>
+                            <div class="info">
+                                <p>{{ project.due_date }}</p>
+                            </div>
+                        </div>
+                        <div class="info_group">
+                            <div class="info_label">
+                                <span class="material-symbols-outlined">date_range</span>
+                                <span>Days Worked</span>
+                            </div>
+                            <div class="info">
+                                <p>{{ days_worked }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="personnels">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if project.project_manager_id %}
+                            <tr>
+                                <td>
+                                    {% if project.project_manager_id.first_name != 'Not Provided' %}
+                                        {{ project.project_manager_id.first_name }}
+                                    {% endif %}
+                                                    
+                                    {% if project.project_manager_id.last_name != 'Not Provided' %}
+                                        {{ project.project_manager_id.last_name }}
+                                    {% endif %}
+                                                    
+                                    {% if project.project_manager_id.first_name == 'Not Provided' and project.project_manager_id.last_name == 'Not Provided' %}
+                                        Names Not Provided ({{ project.project_manager_id.account_id.username }})
+                                    {% endif %}
+                                </td>
+                                <td>Project Manager</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="2">No project manager assigned</td></tr>
+                            {% endif %}
+                            {% if project.assigned_foreman %}
+                            <tr>
+                                <td>
+                                    {% if project.assigned_foreman.first_name != 'Not Provided' %}
+                                        {{ project.assigned_foreman.first_name }}
+                                    {% endif %}
+                                                    
+                                    {% if project.assigned_foreman.last_name != 'Not Provided' %}
+                                        {{ project.assigned_foreman.last_name }}
+                                    {% endif %}
+                                                    
+                                    {% if project.assigned_foreman.first_name == 'Not Provided' and project.assigned_foreman.last_name == 'Not Provided' %}
+                                        Names Not Provided ({{ project.assigned_foreman.account_id.username }})
+                                    {% endif %}               
+                                </td>
+                                <td>Foreman</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="2">No Foreman assigned</td></tr>
+                            {% endif %}
+                            {% if assigned_workers %}
+                                {% for worker in assigned_workers %}
+                                <tr>
+                                    <td>
+                                        {% if worker.first_name != 'Not Provided' %}
+                                            {{ worker.first_name }}
+                                        {% endif %}
+                                                        
+                                        {% if worker.last_name != 'Not Provided' %}
+                                            {{ worker.last_name }}
+                                        {% endif %}
+                                                        
+                                        {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                            Names Not Provided ({{ worker.account_id.username }})
+                                        {% endif %}
+                                    </td>
+                                    <td>Worker</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <tr><td colspan="2">No Worker assigned</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty">
+                        <h4>You are currently not assigned to a project.</h4>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </body>
+</html>

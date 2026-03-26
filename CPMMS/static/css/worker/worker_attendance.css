@@ -1,0 +1,202 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: Poppins, Sans-serif;
+    line-height: 1.5rem;
+}
+body{
+    background-color: #fff;
+    min-height: 100dvh;
+}
+.container{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+.attendance{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.page_title{
+    padding: 15px;
+    margin-top: 1.5%;
+    border-bottom: 3px solid #f9f9f9;
+}
+.page_title h3{
+    font-weight: 500;
+}
+.page_title p{
+    font-size: 13px;
+    color: #777;
+}
+.attendance_search form{
+    width: 100%;
+    display: flex;
+    align-items: end;
+    gap: 10px;
+    padding: 10px;
+}
+.search_input{
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.search_input label{
+    font-size: 14x;
+    color: #777;
+}
+.search_input select{
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    border: 1px solid #c1c1c1;
+    font-size: 14px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    color: #333;
+}
+.attendance_search .search_button{
+    padding: 13px;
+    width: 25%;
+    font-size: 14px;
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.attendance_container{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 1.5%;
+}
+.attendance_box{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.attendance_container h4{
+    font-weight: 500;
+    color: #333;
+}
+#attendance{
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 1.5%;
+    margin: 0 auto;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+#attendance thead, #attendance tbody tr{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+#attendance thead{
+    box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.15);
+    z-index: 1; 
+    position: relative;
+}
+#attendance th{
+    text-align: center; 
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    padding: 15px;
+    width: 15%;
+    background-color: #4379F2; 
+}
+#attendance tr:nth-child(odd){
+    background-color: #f9f9f9;
+}
+#attendance tbody{
+    display: block;
+    max-height: 450px;
+    overflow-y: auto;
+}
+#attendance td{
+    padding: 20px;
+    text-align: center;
+    width: 15%;
+    font-size: 13px;
+    position: relative;
+}
+.present{
+    color: green;
+}
+.late{
+    color: orange;
+}
+.empty{
+    text-align: center;
+    font-style: italic;
+    color: #333;
+}
+/*
+.attendance_box{
+    background-color: #f9f9f9;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 20px 10px;
+    border-radius: 15px;
+}
+.attendance_head{
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.left_attendance_head{
+    display: flex;
+    gap: 8px;
+}
+.left_attendance_head .material-symbols-outlined{
+    font-size: 22px !important;
+}
+.right_attendance_head p, .record .status{
+    font-size: 15px;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+.attendance_body{
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6rem;
+}
+.attendance_body .record{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.record .label{
+    font-size: 14px;
+    color: #777;
+}
+.record .info{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.info p:not(.status){
+    color: #333;
+    font-size: 17px;
+}
+.morning{
+    background-color: #FFD580;
+    color: #4A4A4A;
+}
+.afternoon{
+    background-color: #F4A261;
+    color: #2C3E50;
+}
+*/
+

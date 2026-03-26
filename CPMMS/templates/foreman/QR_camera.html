@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/foreman/foreman_QR.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <title>QR Camera</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'foreman/sidebar.html' %}
+            <div class="main container">
+                <header>
+                    <div class="head">
+                        <div class="head_nav">
+                            <p class="not_active">Worker</p>
+                            <img src="{% static 'icons/next.png' %}" class="nav_icon">
+                            <a href="{% url 'QRcamera' %}" class="active">QR Camera</a>
+                        </div>
+                        <h1>Worker Attendance</h1>
+                    </div>
+                    <nav class="nav_links">
+                        <a href="{% url 'foreman_attendance' %}">Attendance Log</a>
+                        <a href="{% url 'QRcamera' %}">QR Camera</a>
+                    </nav>  
+                </header>
+                <section class="qr_scanner">         
+                    <div class="left_box">
+                        <div id="qr-reader" style="width: 100%;"></div>
+                    </div>
+                    <div class="right_box">
+                        <h1>Worker Information</h1>
+                        <div id="qr-reader-results"></div>
+                        <div class="worker_information">
+                            <div class="info_group">
+                                <h4>Full Name: </h4>
+                            </div>
+                            <div class="info_group">
+                                <h4>Age: </h4>
+                            </div>
+                            <div class="info_group">
+                                <h4>Gender: </h4>
+                            </div>
+                            <div class="info_group">
+                                <h4>Contact: </h4>
+                            </div>
+                            <div class="info_group">
+                                <h4>Address: </h4>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script src="{% static 'javascript/function.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{% static 'javascript/foreman_QR.js' %}"></script>
+    </body>
+</html>

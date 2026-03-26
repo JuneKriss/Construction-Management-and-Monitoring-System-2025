@@ -1,0 +1,122 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+    font-family: Poppins, Sans-serif;
+}
+body{
+    background-color: #f9f9f9;
+}
+.container{
+    max-width: 1536px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+.project_form{
+    margin-top: 1.5%;
+}
+.form_text{
+    text-align: center;
+    line-height: 2.2rem;
+}
+.form_text h1{
+    font-size: 28px;
+    font-weight: 500;
+}
+.form_text p{
+    font-size: 17px;
+}
+form{
+    width: 100%;
+    padding: 20px;
+}
+form .group_title{
+    margin-top: 2%;
+    margin-bottom: 8px;
+}
+form .form_groups{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2rem;
+    column-gap: 7rem;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+}
+form .two-column {
+    grid-column: span 2;
+}
+.group_title h3{
+    font-weight: 500;
+    color: #333;
+}
+form .group_box{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.group_box label{
+    font-size: 14px;
+    color: #333;
+}
+.group_box input, .group_box select, .group_box textarea{
+    padding: 15px;
+    border: 1px solid #c0c0c0;
+    color: #333;
+    font-size: 15px;
+}
+.group_box textarea{
+    padding: 10px !important;
+}
+.group_box p{
+    font-size: 16px;
+}
+.group_box a{
+    color: #4379F2;
+}
+.form_buttons{
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-radius: 15px;
+    margin-bottom: 1.5%;
+}
+.form_buttons a{
+    background-color: #f24343ec;
+    width: 15%;
+    border-radius: 10px;
+    border: 1px solid #f24343ec;
+    text-decoration: none;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+.form_buttons a:hover{
+    background-color: #fff;
+    color: #f24343ec;
+    cursor: pointer;
+}
+.form_buttons button{
+    width: 15%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #4379F2;
+    border: 1px solid #4379F2;
+    color: #fff;
+    font-size: 16px;
+}
+.form_buttons button:hover{
+    background-color: #fff;
+    color: #4379F2;
+    cursor: pointer;
+}
+.reminder{
+    color: #777;
+}

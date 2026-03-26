@@ -1,0 +1,91 @@
+{% for project in project_data %}
+    <div class="team_box" data-project-id="{{ project.project_id }}">
+        <div class="project_info">
+            <h4>{{ project.project_name }} - {{ project.client }}</h4>
+            <p>{{ project.description }}</p>
+        </div>
+        <div>
+            <table id="team">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if project.foreman %}
+                    <tr>
+                        <td>
+                            <img src="{{ project.foreman.foreman_image }}" alt="Foreman Image" class="avatar">
+                            <div class="text">
+                                <h4>
+                                    {% if project.foreman.first_name != 'Not Provided' %}
+                                        {{ project.foreman.first_name }}
+                                    {% endif %}
+                                                    
+                                    {% if project.foreman.last_name != 'Not Provided' %}
+                                        {{ project.foreman.last_name }}
+                                    {% endif %}
+                                                    
+                                    {% if project.foreman.first_name == 'Not Provided' and project.foreman.last_name == 'Not Provided' %}
+                                        Names Not Provided
+                                    {% endif %}
+                                </h4>
+                                <p>
+                                    {% if project.foreman.email != 'default@example.com'%}
+                                        {{ project.foreman.email }}
+                                    {% else %}
+                                        Email Not Provided
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </td>
+                        <td><p>{{ project.foreman.role }}</p></td>
+                    </tr>
+                    {% endif %}
+                    {% for worker in project.workers %}
+                    <tr data-worker-id="{{ worker.worker_id }}">
+                        <td>
+                            <img src="{{ worker.worker_image.url }}" alt="" class="avatar">
+                            <div class="text">
+                                <h4>
+                                    {% if worker.first_name != 'Not Provided' %}
+                                        {{ worker.first_name }}
+                                    {% endif %}
+                                                    
+                                    {% if worker.last_name != 'Not Provided' %}
+                                        {{ worker.last_name }}
+                                    {% endif %}
+                                                    
+                                    {% if worker.first_name == 'Not Provided' and worker.last_name == 'Not Provided' %}
+                                        Names Not Provided
+                                    {% endif %}
+                                </h4>
+                                <p>
+                                    {% if worker.contact != '000-000-0000' %}
+                                        {{ worker.contact }}
+                                    {% else %}
+                                        Contact Number Not Provided
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </td>
+                        <td><p>{{ worker.role }}</p></td>
+                        <td class="icons">
+                            <span class="material-symbols-outlined" id="openModalText">info</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not project.foreman and not project.workers %}
+                    <tr>
+                        <td class="empty" style="width: 100%;">
+                            No foreman and worker assigned on the project yet.
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endfor %}

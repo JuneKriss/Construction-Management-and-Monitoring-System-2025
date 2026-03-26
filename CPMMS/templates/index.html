@@ -1,0 +1,47 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %} Index {% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="left">
+            <div class="welcome">
+                <h1><span>Kanooz</span> Industrial Services</h1>
+                <h2>Welcome to the Construction Management <br>and Monitoring System!</h2>
+            </div>
+        </div>
+        <div class="right">
+            <div class="text">
+                <h2>Sign In</h2>
+                <p>Welcome back! Sign in to continue.</p>
+            </div>      
+            <form method="POST" action="{% url 'validate' %}">
+                {% csrf_token %}
+                <div class="input">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="input">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <input type="submit" value="Sign In" class="submit">
+            </form>
+            <div class="messages">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-error">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

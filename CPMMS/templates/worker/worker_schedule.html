@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <link rel="stylesheet" href="{% static 'css/worker/worker_schedule.css' %}">
+        <title>Schedules</title>
+    </head>
+    <body>
+        {% include 'worker/worker_header.html' %}
+
+        <section class="container ">
+            <div class="page_title">
+                <h3>Task Schedules</h3>
+                <p>Check your tasks and deadlines on the calendar below.</p>
+            </div>
+            <div class="calendar_container">
+                <div id="calendar"></div>
+            </div>
+        </section>
+
+        <div id="taskModal" class="taskModal">
+          <div class="modal-content">
+              <div class="taskModal_head">
+                  <span class="close" id="closeModal">&times;</span>
+                  <div class="left_head">
+                      <div class="head_text">
+                          <h3 id="eventModalTitle">Project Title</h3>
+                          <p>View and modify the task information.</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="task_details">
+                <div class="details_form_group">
+                  <div class="progress-bar">
+                      <span class="progress-text">Task Progress</span>
+                      <div class="progress">
+                          <div class="progress-fill" id="progressFill" style="width: 50%;">
+                              <span class="progress-percentage" id="progressPercentage">50%</span>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="details_form_group">
+                    <label for="taskName">Task Name</label>
+                    <input type="text" id="eventTaskName" name="detailsTaskName" readonly>
+                </div>
+                <div class="details_form_group">
+                    <label for="eventModalStart">Start Date</label>
+                    <input type="date" id="eventModalStart" name="detailsStart_date" class="start_date" readonly>
+                </div>
+                <div class="details_form_group">
+                    <label for="eventModalEnd">Due Date</label>
+                    <input type="date" id="eventModalEnd" name="detailsDeadline"  class="end_date" readonly>
+                </div>
+                <div class="details_form_group">
+                    <label for="eventModalDescription">Description</label>
+                    <textarea id="eventModalDescription" name="detailsDescription" rows="6" cols="50" readonly></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+        <script src="{% static 'javascript/worker_schedule.js' %}"></script>
+    </body>
+</html>

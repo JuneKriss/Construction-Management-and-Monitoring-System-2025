@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: Poppins, Sans-serif;
+    line-height: 1.5rem;
+}
+body{
+    background-color: #fff;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+.sidebar{
+    height: 100vh;
+    width: 250px;
+    padding: 10px 1em;
+    border-radius: 25px;
+    background-color: #f9f9f9;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 10rem;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.nav{
+    display: flex;
+    flex-direction: column;
+    gap: 13rem;
+}
+.logo h1{
+    font-size: 2.2rem;
+    font-style: italic;
+    color: #FFCC00;
+    padding: .85em;
+}
+.nav ul{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.nav a, .nav .dropdown-btn, .account a,.account .dropdown-btn{
+    border-radius: .5em;
+    padding: .85em;
+    text-decoration: none;
+    color: #777777;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+.nav .nav_icons, .acc-toggle{
+    flex-shrink: 0;
+    width: 15%;
+}
+.nav a span, .nav .dropdown-btn span, .account .account_details{
+    flex-grow: 1;
+}
+.nav a:hover, .nav .dropdown-btn:hover, .account a:hover, .account .dropdown-btn:hover{
+    background-color: #fff;
+}
+.dropdown-btn{
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+.nav .sub-menu, .account .sub-menu{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 300ms ease-in-out;
+
+    > div{
+        overflow: hidden;
+    }
+}
+.nav .sub-menu a, .account .sub-menu a{
+    padding-left: 2em;
+}
+.nav .sub-menu.show, .account .sub-menu.show{
+    grid-template-rows: 1fr;
+}
+.dropdown-btn img{
+    transition: 200ms ease;
+}
+.rotate img:last-child{
+    rotate: 180deg;
+}
+.account_details{
+    display: flex;
+    flex-direction: column;
+}
+.account_details h4 {
+    width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.account .profile{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.account .dropdown-btn .details{
+    color: #808080;
+}

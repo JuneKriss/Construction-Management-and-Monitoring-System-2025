@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: Poppins, Sans-serif;
+    line-height: 1.5rem;
+}
+body{
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+.content-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+.container {
+    background-color: #F0F4F7;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.container_box{
+    width: 95%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 2%;
+}
+.head{
+    line-height: 2rem;
+    padding: 20px 0px;
+    padding-top: 25px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px;
+}
+.head h1{
+    font-size: 25px;
+    font-weight: 500;
+    color: #333;
+}
+.head p{
+    font-weight: 500;
+    color: #777;
+}
+.project_table{
+    background-color: #fff;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 2%;
+}
+.table_actions{
+    margin-bottom: 2%;
+    margin-top: 1%;
+}
+.table_actions .search{
+    position: relative;
+    width: 25%;
+}
+.table_actions .search input{
+    width: 100%;
+    padding: 15px 25px;
+    border: 1px solid #c0c0c0;
+    padding-right: 40px;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.search .material-symbols-outlined{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 26px !important;
+    cursor: pointer;
+    color: #777 !important;
+}
+.search input:focus {
+    border-color: #4379F2;
+    outline: #4379F2;
+}
+#projects{
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1.5%;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+#projects-head {
+    background-color: #F0F4F7;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+#projects th {
+    text-align: left;
+    font-size: 17px;
+    font-weight: 600;
+    color: #777;
+    padding: 20px;
+    width: 10%;
+}
+#projects td{
+    width: 15%;
+    padding: 20px;
+    font-size: 16px;
+    border-bottom: 3px solid #f9f9f9;
+    color: #333;
+}
+#projects td:first-child, 
+#projects th:first-child {
+    width: 15%;
+}
+#projects td:last-child,
+#projects th:last-child{
+    width: 1%;
+    text-align: center;
+}
+#projects td:nth-child(3),
+#projects th:nth-child(3){
+    width: 18%;
+}
+#projects td .material-symbols-outlined{
+    color: #333 !important;
+}
+.progress {
+    position: relative;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    height: 45px;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.progress-fill {
+    background-color: #4379F2;
+    height: 100%;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 12px;
+    font-weight: bold;
+    transition: width 0.3s ease;
+}
+.progress-percentage {
+    position: absolute;
+    left: 10px;
+    color: #fff;
+}
+.not_started {
+    color: #B0B0B0;
+}
+.initial {
+    color: #85C8FF;
+}
+.in_progress {
+    color: #6FCF97;
+}
+.midway {
+    color: #FFCF67;
+}
+.near_complete {
+    color: #FF9E9E;
+}
+.complete {
+    color: #7DD181;
+}

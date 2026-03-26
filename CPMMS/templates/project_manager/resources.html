@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/project_manager/pm_resources.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+        <title>Project Resources</title>
+    </head>
+    <body>
+        <div class="content-container">
+            {% include 'project_manager/sidebar.html' %}
+            <section class="main container">
+                <div class="container_box">
+                    <div class="head">
+                        <div class="head_title">
+                            <h1>Project Resources</h1>
+                            <p>Manage and track the project's materials, equipment, and supplies.</p>
+                        </div>
+                    </div>
+                    <div class="box_container">
+                        {% if projects %}
+                            {% for project in projects %}
+                            <div class="resources_box" data-project-id="{{ project.project_id }}">
+                                <div class="resource_head">
+                                    <div class="left_resource_head">
+                                        <h3>{{ project.project_name }} - {{ project.client }}</h3>
+                                    </div>
+                                    <div class="right_head">
+                                        {% if project.finalization_status != "Completed" and not project.isFinished %}
+                                        <div class="addbtn head_btns" data-project-name="{{ project.project_name }}">
+                                            <span class="material-symbols-outlined">add</span>
+                                            <p>Add</p>
+                                        </div>
+                                        {% endif %}
+                                        <!--Add Modal-->
+                                        <div id="addModal" class="modal">
+                                            <div class="modal-content">
+                                                <div class="addModal_head">
+                                                    <span class="close closeModal">&times;</span>
+                                                    <div class="left_addModal_head">
+                                                        <div class="modalAdd_icon">
+                                                            <span class="material-symbols-outlined">add_box</span>
+                                                        </div>
+                                                        <div class="addModal_head_text">
+                                                            <h2 id="addModalTitle">Project Title</h2>
+                                                            <p>Add resources to the project.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <form id="addResourcesForm" method="post">
+                                                    {% csrf_token %}
+                                                    <div class="addResource_form_group">
+                                                        <label for="resource_name">Resource Name</label>
+                                                        <input type="text" id="resource_name" name="resource_name" required>
+                                                    </div>
+                                                    <div class="addResource_form_group">
+                                                        <label for="quantity">Quantity</label>
+                                                        <input type="number" id="quantity" name="quantity" min="1" required>
+                                                    </div>
+                                                    <div class="addResource_form_group">
+                                                        <label for="type">Type</label>
+                                                        <select id="type" name="type" required>
+                                                            <option value="" disabled selected>Resource Type</option>
+                                                            <option value="material">Material</option>
+                                                            <option value="supply">Supply</option>
+                                                            <option value="equipment">Equipment</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="addResource_form_group">
+                                                        <label for="subType">Subtype</label>
+                                                        <select id="subType" name="subType" required>
+                                                            <option value="" disabled selected>Resource Subtype</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="addResource_form_group">
+                                                        <label for="cost">Cost</label>
+                                                        <input type="number" min="1" id="cost" name="cost" required>
+                                                    </div>
+                                                    <div class="addResource_form_group">
+                                                        <select name="cost_type" required>
+                                                            <option value="" disabled selected>Cost Type</option>
+                                                            <option value="Per Unit">Per Unit</option>
+                                                            <option value="Overall">Overall</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="two-column action_btns">
+                                                        <button type="button" id="add_anotherBtn" data-add-another="true">Add Another</button>
+                                                        <button type="submit" class="submit">Add</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <!--Add Modal-->
+                                        <!--Update Modal-->
+                                        <div id="updateModal" class="modal">
+                                            <div class="modal-content">
+                                                <div class="updateModal_head">
+                                                    <span class="close closeModal">&times;</span>
+                                                    <div class="left_updateModal_head">
+                                                        <div class="updateModal_icon">
+                                                            <span class="material-symbols-outlined">Autorenew</span>
+                                                        </div>
+                                                        <div class="updateModal_head_text">
+                                                            <h2 id="updateModalTitle">Project Title</h2>
+                                                            <p>Update resource information of a project.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <form id="updateResourceForm" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" id="resource_id" name="resource_id" value="">
+                                                    <div class="updateResource_form_group">
+                                                        <label for="updateResource_name">Resource Name</label>
+                                                        <input type="text" id="updateResource_name" name="updateResource_name" required>
+                                                    </div>
+                                                    <div class="updateResource_form_group">
+                                                        <label for="updateQuantity">Quantity</label>
+                                                        <input type="number" min="1" id="updateQuantity" name="updateQuantity" required>
+                                                    </div>
+                                                    <div class="updateResource_form_group">
+                                                        <label for="updateType">Type</label>
+                                                        <select id="updateType" name="updateType" required>
+                                                            <option value="" disabled selected>Resource Type</option>
+                                                            <option value="material">Material</option>
+                                                            <option value="supply">Supply</option>
+                                                            <option value="equipment">Equipment</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="updateResource_form_group">
+                                                        <label for="updateSubType">Subtype</label>
+                                                        <select id="updateSubType" name="updateSubType" required>
+                                                            <option value="" disabled selected>Resource Subtype</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="updateResource_form_group">
+                                                        <label for="updateCost">Cost</label>
+                                                        <input type="number" min="1" id="updateCost" name="updateCost" required>
+                                                    </div>
+                                                    <div class="updateResource_form_group">
+                                                        <select name="updateCostType" required>
+                                                            <option value="" disabled selected>Cost Type</option>
+                                                            <option value="Per Unit">Per Unit</option>
+                                                            <option value="Overall">Overall</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="two-column action_btns">
+                                                        <button type="button" class="delete">Delete</button>
+                                                        <button type="submit" class="submit">Save Changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <!--Update Modal-->
+                                    </div>
+                                    <div class="total">
+                                        <div class="costs">
+                                            <h4>Total Cost:</h4>
+                                            <p>₱ {{ project.total_cost|default:"0" }}</p>
+                                        </div>
+                                        <div class="costs">
+                                            <h4>Remaining budget after cost:</h4>
+                                            <p>₱ {{ project.remaining_budget|default:project.budget }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table_con">
+                                    <table id="resources">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Quantity</th>
+                                                <th>Type</th>
+                                                <th>SubType</th>
+                                                <th>Cost</th>
+                                                <th>Cost Type</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for resource in project.supplies.all %}
+                                            <tr>
+                                                <td>{{ resource.name }}</td>
+                                                <td>{{ resource.quantity }}</td>
+                                                <td>{{ resource.get_type_display }}</td>
+                                                <td>{{ resource.subtype }}</td>
+                                                <td>₱ {{ resource.cost }}</td>
+                                                <td>{{ resource.cost_type }}</td>
+                                                {% if resource.added_by != 'PM' %}
+                                                    <td></td>
+                                                {% else %}
+                                                    {% if project.finalization_status != "Completed" and not project.isFinished %}
+                                                        <td class="table_icon">
+                                                            <span class="material-symbols-outlined"
+                                                                data-resource-id="{{ resource.resource_id }}"
+                                                                data-resource-name="{{ resource.name }}"
+                                                                data-resource-quantity="{{ resource.quantity }}"
+                                                                data-resource-type="{{ resource.type }}"
+                                                                data-resource-subtype="{{ resource.subtype }}"
+                                                                data-resource-cost="{{ resource.cost }}"
+                                                                data-resource-cost-type="{{ resource.cost_type }}"
+                                                                data-project-name="{{ project.project_name }}">edit</span>
+                                                        </td>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="7">No resources available for this project.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div>
+                            <p style="text-align: center; width: 100%; font-style: italic; color: #777;">You are currently not assigned to any project</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{% static 'javascript/pm_resources.js' %}"></script>
+    </body>
+</html>
